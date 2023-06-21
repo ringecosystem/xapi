@@ -49,17 +49,6 @@ contract AirnodeDapi is IFeedOracle, Ownable2Step {
         return (_aggregatedData.blockNumber, _aggregatedData.stateRoot);
     }
 
-    function addBeacon(Beacon calldata beacon) external onlyOwner {
-        bytes32 beaconId = deriveBeaconId(beacon.airnode, beacon.endpointId);
-        require(_beaconIds.add(beaconId), "!add");
-        _beaconDatas[beaconId] = beacon;
-    }
-
-    function removeBeacon(bytes32 beaconId) external onlyOwner {
-        require(_beaconIds.remove(beaconId), "!rm");
-        delete _beaconDatas[beaconId];
-    }
-
     function beaconsLength() external view returns (uint256) {
         return _beaconIds.length();
     }
@@ -77,6 +66,17 @@ contract AirnodeDapi is IFeedOracle, Ownable2Step {
         return _beaconIds.contains(beaconId);
     }
 
+    function addBeacon(Beacon calldata beacon) external onlyOwner {
+        bytes32 beaconId = deriveBeaconId(beacon.airnode, beacon.endpointId);
+        require(_beaconIds.add(beaconId), "!add");
+        _beaconDatas[beaconId] = beacon;
+    }
+
+    function removeBeacon(bytes32 beaconId) external onlyOwner {
+        require(_beaconIds.remove(beaconId), "!rm");
+        delete _beaconDatas[beaconId];
+    }
+
     function deriveBeaconId(
         address airnode,
         bytes32 endpointId
@@ -86,10 +86,6 @@ contract AirnodeDapi is IFeedOracle, Ownable2Step {
 
     function getRequestFee() external pure override returns (address, uint256) {
         return (address(0), fee * beaconsLength());
-    }
-
-    function isRequestComplete(uint64 requestId) external view override returns (bool) {
-        return fulfilledData[requestId].blockNumber > 0;
     }
 
     function dataOf(uint64 requestId) external view override returns (uint256, bytes32) {
