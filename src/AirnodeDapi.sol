@@ -39,13 +39,18 @@ contract AirnodeDapi is IFeedOracle, Ownable2Step, RrpRequesterV0, AirnodeDataFe
     uint256 public fee;
     // requestId => beaconId
     mapping(bytes32 => bytes32) private _requestIdToBeaconId;
-    // beaconId => airnode
+    // beaconId => beacon
     mapping(bytes32 => Beacon) private _beaconDatas;
-    // beaconSet
+    // beaconIdSet
     EnumerableSet.Bytes32Set private _beaconIds;
 
-    constructor(address airnodeRrp, address dao) RrpRequesterV0(airnodeRrp) {
+    constructor(
+        address airnodeRrp,
+        address dao,
+        uint256 fee_
+    ) RrpRequesterV0(airnodeRrp) {
         _transferOwnership(dao);
+        fee = fee_;
     }
 
     function latestAnswer() external view override returns (uint256 block_number, bytes32 state_root) {
@@ -78,6 +83,10 @@ contract AirnodeDapi is IFeedOracle, Ownable2Step, RrpRequesterV0, AirnodeDataFe
     function removeBeacon(bytes32 beaconId) external onlyOwner {
         require(_beaconIds.remove(beaconId), "!rm");
         delete _beaconDatas[beaconId];
+    }
+
+    function setFee(uint256 fee_) external onlyOwner {
+        fee = fee_;
     }
 
     function deriveBeaconId(
