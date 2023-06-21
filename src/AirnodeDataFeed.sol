@@ -18,7 +18,7 @@
 pragma solidity 0.8.17;
 
 contract AirnodeDataFeed {
-    event AggregatedBlockData(BlockData data);
+    event AirnodeDataFeedUpdated(bytes32 indexed beaconId, BlockData data);
 
     struct BlockData {
         uint256 blockNumber;
@@ -44,6 +44,7 @@ contract AirnodeDataFeed {
         BlockData memory newData = abi.decode(data, (BlockData));
         if (newData.blockNumber > oldData.blockNumber) {
             _dataFeeds[beaconId] = newData;
+            emit AirnodeDataFeedUpdated(beaconId, newData);
         }
     }
 

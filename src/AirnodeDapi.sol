@@ -28,6 +28,8 @@ contract AirnodeDapi is IFeedOracle, Ownable2Step, RrpRequesterV0, AirnodeDataFe
 
     event AirnodeRrpRequested(bytes32 indexed beaconId, bytes32 indexed requestId);
     event AirnodeRrpCompleted(bytes32 indexed beaconId, bytes32 indexed requestId, bytes data);
+    event AggregatedBlockData(BlockData data);
+
 
     struct Beacon {
         address airnode;
