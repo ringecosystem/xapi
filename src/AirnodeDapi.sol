@@ -18,16 +18,22 @@
 pragma solidity 0.8.17;
 
 import "./interfaces/IFeedOracle.sol";
+import "./RrpRequesterV0.sol";
+import "./AirnodeDataFeed.sol";
+import "@openzeppelin/contracts@4.9.2/access/Ownable2Step.sol";
+import "@openzeppelin/contracts@4.9.2/utils/structs/EnumerableSet.sol";
 
-contract AirnodeDapi is IFeedOracle, Ownable2Step {
-    event AirnodeRrpRequested(uint64 indexed beaconId, bytes32 indexed requestId);
-    event AirnodeRrpCompleted(uint64 indexed beaconId, bytes32 indexed requestId, BlockData data);
+contract AirnodeDapi is IFeedOracle, Ownable2Step, RrpRequesterV0, AirnodeDataFeed {
+    using EnumerableSet for EnumerableSet.Bytes32Set;
+
+    event AirnodeRrpRequested(bytes32 indexed beaconId, bytes32 indexed requestId);
+    event AirnodeRrpCompleted(bytes32 indexed beaconId, bytes32 indexed requestId, bytes data);
 
     struct Beacon {
         address airnode;
         bytes32 endpointId;
         address sponsor;
-        address sponsorWallet;
+        address payable sponsorWallet;
     }
 
     uint256 public fee;
@@ -46,7 +52,7 @@ contract AirnodeDapi is IFeedOracle, Ownable2Step {
         return (_aggregatedData.blockNumber, _aggregatedData.stateRoot);
     }
 
-    function beaconsLength() external view returns (uint256) {
+    function beaconsLength() public view returns (uint256) {
         return _beaconIds.length();
     }
 
@@ -81,7 +87,7 @@ contract AirnodeDapi is IFeedOracle, Ownable2Step {
         beaconId = keccak256(abi.encodePacked(airnode, endpointId));
     }
 
-    function getRequestFee() external pure override returns (address, uint256) {
+    function getRequestFee() external view returns (address, uint256) {
         return (address(0), fee * beaconsLength());
     }
 
@@ -101,12 +107,12 @@ contract AirnodeDapi is IFeedOracle, Ownable2Step {
         emit AirnodeRrpRequested(beaconId, requestId);
     }
 
-    function requestFinalizedHash() external payable override returns (uint64 requestId) {
+    function requestFinalizedHash() external payable {
         bytes32[] memory beaconIds = _beaconIds.values();
         uint beaconCount = beaconIds.length;
         require(msg.value == fee * beaconCount, "!fee");
         for (uint i = 0; i < beaconCount; i++) {
-            bytes32 beaconId = beaconId[i];
+            bytes32 beaconId = beaconIds[i];
             _request(beaconId);
         }
     }
@@ -119,6 +125,19 @@ contract AirnodeDapi is IFeedOracle, Ownable2Step {
         require(beaconId != bytes32(0), "!requestId");
         delete _requestIdToBeaconId[requestId];
         processBeaconUpdate(beaconId, data);
-        emit AirnodeRrpCompleted(beaconId, requestId, decodedData);
+        emit AirnodeRrpCompleted(beaconId, requestId, data);
+    }
+
+    function aggregateBeacons(bytes32[] memory beaconIds) external {
+        uint256 beaconCount = beaconIds.length;
+        bytes32[] memory allBeaconIds = _beaconIds.values();
+        require(beaconCount * 3 > allBeaconIds.length * 2, "!supermajor");
+        BlockData[] memory datas = getDatasFromBeacons(beaconIds);
+        BlockData memory data = datas[0];
+        for (uint i = 1; i < beaconCount; i++) {
+            require(eq(data, datas[i]), "!agg");
+        }
+        _aggregatedData = data;
+        emit AggregatedBlockData(data);
     }
 }

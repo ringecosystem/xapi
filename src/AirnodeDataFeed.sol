@@ -31,7 +31,7 @@ contract AirnodeDataFeed {
 
     function getDatasFromBeacons(bytes32[] memory beaconIds) public view returns (BlockData[] memory) {
         uint256 beaconCount = beaconIds.length;
-        BlockData[] memory datas = new BlockData()[beaconCount];
+        BlockData[] memory datas = new BlockData[](beaconCount);
         for (uint i = 0; i < beaconCount; i++) {
             bytes32 beaconId = beaconIds[i];
             datas[i] = _dataFeeds[beaconId];
@@ -39,25 +39,11 @@ contract AirnodeDataFeed {
         return datas;
     }
 
-    function aggregateBeacons(bytes32[] memory beaconIds) external {
-        uint256 beaconCount = beaconIds.length;
-        bytes32[] memory allBeaconIds = _beaconIds.values();
-        require(beaconCount * 3 > allBeaconIds.length * 2, "!supermajor");
-        BlockData[] memory datas = getDatasFromBeacons(beaconIds);
-        BlockData memory data = datas[0];
-        for (uint i = 1; i < beaconCount; i++) {
-            require(eq(data, datas[i]), "!agg");
-        }
-        _aggregatedData = data;
-        emit AggregatedBlockData(data);
-    }
-
     function processBeaconUpdate(bytes32 beaconId, bytes calldata data) internal {
         BlockData memory oldData = _dataFeeds[beaconId];
         BlockData memory newData = abi.decode(data, (BlockData));
-        require(, "!new");
-        if (newData.blockNumber > oldData) {
-            _dataFeeds[beaconId] = decodedData;
+        if (newData.blockNumber > oldData.blockNumber) {
+            _dataFeeds[beaconId] = newData;
         }
     }
 

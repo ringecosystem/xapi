@@ -9,7 +9,7 @@ contract AirnodeDapiTest is DSTest {
     AirnodeDapi dapi;
 
     function setUp() public {
-        dapi = new AirnodeDapi();
+        dapi = new AirnodeDapi(address(0x1), address(0x2));
     }
 
     function testFail_basic_sanity() public {
