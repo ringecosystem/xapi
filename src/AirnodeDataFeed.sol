@@ -52,7 +52,7 @@ contract AirnodeDataFeed {
         return a.blockNumber == b.blockNumber && a.stateRoot == b.stateRoot;
     }
 
-    function _readDataFeedWithId(bytes32 beaconId) internal view returns (uint256 blockNumber, bytes32 stateRoot) {
+    function getDataFeedWithId(bytes32 beaconId) public view returns (uint256 blockNumber, bytes32 stateRoot) {
         BlockData memory data = _dataFeeds[beaconId];
         return (data.blockNumber, data.stateRoot);
     }
