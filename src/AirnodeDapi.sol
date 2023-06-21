@@ -38,11 +38,8 @@ contract AirnodeDapi is IFeedOracle, Ownable2Step {
     // beaconSet
     EnumerableSet.Bytes32Set private _beaconIds;
 
-    address immutable public AIRNODE_RRP;
-
-    constructor(address airnodeRrp, address dao) {
+    constructor(address airnodeRrp, address dao) RrpRequesterV0(airnodeRrp) {
         _transferOwnership(dao);
-        AIRNODE_RRP = airnodeRrp;
     }
 
     function latestAnswer() external view override returns (uint256 block_number, bytes32 state_root) {
@@ -88,15 +85,10 @@ contract AirnodeDapi is IFeedOracle, Ownable2Step {
         return (address(0), fee * beaconsLength());
     }
 
-    function dataOf(uint64 requestId) external view override returns (uint256, bytes32) {
-        BlockData memory data = fulfilledData[requestId];
-        return (data.blockNumber, data.stateRoot);
-    }
-
     function _request(bytes32 beaconId) internal {
         Beacon memory beacon = _beaconDatas[beaconId];
         beacon.sponsorWallet.transfer(fee);
-        bytes32 requestId = AIRNODE_RRP.makeFullRequest(
+        bytes32 requestId = airnodeRrp.makeFullRequest(
             beacon.airnode,
             beacon.endpointId,
             beacon.sponsor,
@@ -129,5 +121,4 @@ contract AirnodeDapi is IFeedOracle, Ownable2Step {
         processBeaconUpdate(beaconId, data);
         emit AirnodeRrpCompleted(beaconId, requestId, decodedData);
     }
-
 }
