@@ -71,6 +71,11 @@ contract AirnodeDapi is IFeedOracle, Ownable2Step, RrpRequesterV0, AirnodeDataFe
         return (_aggregatedData.blockNumber, _aggregatedData.stateRoot);
     }
 
+    /// @notice Fetch beaconId by requestId
+    function getBeaconIdByRequestId(bytes32 requestId) external view returns (bytes32) {
+        return _requestIdToBeaconId[requestId];
+    }
+
     /// @notice BeaconSet length
     function beaconsLength() public view returns (uint256) {
         return _beaconIds.length();
