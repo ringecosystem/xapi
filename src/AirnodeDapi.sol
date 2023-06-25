@@ -94,7 +94,7 @@ contract AirnodeDapi is IFeedOracle, Ownable2Step, RrpRequesterV0, AirnodeDataFe
     function deriveBeaconId(
         address airnode,
         bytes32 endpointId
-    ) internal pure returns (bytes32 beaconId) {
+    ) public pure returns (bytes32 beaconId) {
         beaconId = keccak256(abi.encodePacked(airnode, endpointId));
     }
 
