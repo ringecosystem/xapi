@@ -4,9 +4,11 @@ export DAPP_OUT=out
 export DAPP_JSON=out/dapp.sol.json
 export DAPP_SOLC_VERSION=0.8.17
 
-# export DAPP_BUILD_OPTIMIZE=1
-# export DAPP_BUILD_OPTIMIZE_RUNS=999999
+export DAPP_BUILD_OPTIMIZE=1
+export DAPP_BUILD_OPTIMIZE_RUNS=999999
 
-export DAPP_BUILD_LEGACY=1
-export DAPP_BUILD_EXTRACT=1
-export SOLC_FLAGS=' --optimize --optimize-runs 999999 '
+# export DAPP_VERBOSE=1
+
+# export DAPP_BUILD_LEGACY=1
+# export DAPP_BUILD_EXTRACT=1
+# export SOLC_FLAGS=' --optimize --optimize-runs 999999 '
