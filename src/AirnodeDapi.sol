@@ -29,6 +29,8 @@ import "@openzeppelin/contracts@4.9.2/utils/structs/EnumerableSet.sol";
 contract AirnodeDapi is IFeedOracle, Ownable2Step, RrpRequesterV0, AirnodeDataFeed {
     using EnumerableSet for EnumerableSet.Bytes32Set;
 
+    event AddBeacon(bytes32 indexed beaconId, Beacon beacon);
+    event RemoveBeacon(bytes32 indexed beaconId);
     event AirnodeRrpRequested(bytes32 indexed beaconId, bytes32 indexed requestId);
     event AirnodeRrpCompleted(bytes32 indexed beaconId, bytes32 indexed requestId, bytes data);
     event AggregatedBlockData(BlockData data);
@@ -49,8 +51,6 @@ contract AirnodeDapi is IFeedOracle, Ownable2Step, RrpRequesterV0, AirnodeDataFe
     uint256 public fee;
     // requestId => beaconId
     mapping(bytes32 => bytes32) private _requestIdToBeaconId;
-    // beaconId => beacon
-    mapping(bytes32 => Beacon) private _beaconDatas;
     // beaconIdSet
     EnumerableSet.Bytes32Set private _beaconIds;
 
@@ -81,33 +81,22 @@ contract AirnodeDapi is IFeedOracle, Ownable2Step, RrpRequesterV0, AirnodeDataFe
         return _beaconIds.length();
     }
 
-    /// @notice Fetch beacon metadata by index
-    function getBeaconAtIndex(uint256 index) external view returns (Beacon memory) {
-        bytes32 beaconId = _beaconIds.at(index);
-        return _beaconDatas[beaconId];
-    }
-
-    /// @notice Fetch beacon metadata by beaconId
-    function getBeaconById(bytes32 beaconId) external view returns (Beacon memory) {
-        return _beaconDatas[beaconId];
-    }
-
     /// @notice Check if the beacon exist by Id
-    function isBeaconExist(bytes32 beaconId) external view returns (bool) {
+    function isBeaconExist(bytes32 beaconId) public view returns (bool) {
         return _beaconIds.contains(beaconId);
     }
 
     /// @notice Add a beacon to BeaconSet
     function addBeacon(Beacon calldata beacon) external onlyOwner {
-        bytes32 beaconId = deriveBeaconId(beacon.airnode, beacon.endpointId);
+        bytes32 beaconId = deriveBeaconId(beacon);
         require(_beaconIds.add(beaconId), "!add");
-        _beaconDatas[beaconId] = beacon;
+        emit AddBeacon(beaconId, beacon);
     }
 
     /// @notice Remove the beacon from BeaconSet
     function removeBeacon(bytes32 beaconId) external onlyOwner {
         require(_beaconIds.remove(beaconId), "!rm");
-        delete _beaconDatas[beaconId];
+        emit RemoveBeacon(beaconId);
     }
 
     /// @notice change the beacon fee
@@ -116,11 +105,9 @@ contract AirnodeDapi is IFeedOracle, Ownable2Step, RrpRequesterV0, AirnodeDataFe
     }
 
     /// @notice Derives the Beacon ID from the Airnode address and endpoint ID
-    /// @param airnode Airnode address
-    /// @param endpointId Endpoint ID
-    /// @return beaconId Beacon ID
-    function deriveBeaconId(address airnode, bytes32 endpointId) public pure returns (bytes32 beaconId) {
-        beaconId = keccak256(abi.encodePacked(airnode, endpointId));
+    /// @param beacon Beacon
+    function deriveBeaconId(Beacon calldata beacon) public pure returns (bytes32 beaconId) {
+        beaconId = keccak256(abi.encode(beacon));
     }
 
     /// @notice Fetch request fee
@@ -130,8 +117,7 @@ contract AirnodeDapi is IFeedOracle, Ownable2Step, RrpRequesterV0, AirnodeDataFe
         return (address(0), fee * beaconsLength());
     }
 
-    function _request(bytes32 beaconId) internal {
-        Beacon memory beacon = _beaconDatas[beaconId];
+    function _request(Beacon calldata beacon, bytes32 beaconId) internal {
         beacon.sponsorWallet.transfer(fee);
         bytes32 requestId = airnodeRrp.makeFullRequest(
             beacon.airnode,
@@ -148,13 +134,13 @@ contract AirnodeDapi is IFeedOracle, Ownable2Step, RrpRequesterV0, AirnodeDataFe
 
     /// @notice Create a request for arbitrum finalized header
     ///         Send reqeust to each beacon in BeaconSet
-    function requestFinalizedHash() external payable {
-        bytes32[] memory beaconIds = _beaconIds.values();
-        uint beaconCount = beaconIds.length;
+    function requestFinalizedHash(Beacon[] calldata beacons) external payable {
+        uint beaconCount = beacons.length;
         require(msg.value == fee * beaconCount, "!fee");
         for (uint i = 0; i < beaconCount; i++) {
-            bytes32 beaconId = beaconIds[i];
-            _request(beaconId);
+            bytes32 beaconId = deriveBeaconId(beacons[i]);
+            require(isBeaconExist(beaconId), "!exist");
+            _request(beacons[i], beaconId);
         }
     }
 
