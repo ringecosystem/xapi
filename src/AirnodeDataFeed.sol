@@ -29,16 +29,6 @@ contract AirnodeDataFeed {
     // beaconId => blockData
     mapping(bytes32 => BlockData) internal _dataFeeds;
 
-    function getDatasFromBeacons(bytes32[] memory beaconIds) public view returns (BlockData[] memory) {
-        uint256 beaconCount = beaconIds.length;
-        BlockData[] memory datas = new BlockData[](beaconCount);
-        for (uint i = 0; i < beaconCount; i++) {
-            bytes32 beaconId = beaconIds[i];
-            datas[i] = _dataFeeds[beaconId];
-        }
-        return datas;
-    }
-
     function processBeaconUpdate(bytes32 beaconId, bytes calldata data) internal {
         BlockData memory oldData = _dataFeeds[beaconId];
         BlockData memory newData = abi.decode(data, (BlockData));

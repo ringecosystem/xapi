@@ -159,17 +159,31 @@ contract AirnodeDapi is IFeedOracle, Ownable2Step, RrpRequesterV0, AirnodeDataFe
     }
 
     /// @notice Called to aggregate the BeaconSet and save the result
-    /// @param beaconIds Beacon IDs
-    function aggregateBeacons(bytes32[] memory beaconIds) external {
+    /// @param beaconIds Beacon IDs should be sorted in ascending order
+    function aggregateBeacons(bytes32[] calldata beaconIds) external {
         uint256 beaconCount = beaconIds.length;
         bytes32[] memory allBeaconIds = _beaconIds.values();
         require(beaconCount * 3 > allBeaconIds.length * 2, "!supermajor");
-        BlockData[] memory datas = getDatasFromBeacons(beaconIds);
+        BlockData[] memory datas = _checkAndGetDatasFromBeacons(beaconIds);
         BlockData memory data = datas[0];
         for (uint i = 1; i < beaconCount; i++) {
             require(eq(data, datas[i]), "!agg");
         }
         _aggregatedData = data;
         emit AggregatedBlockData(data);
+    }
+
+    function _checkAndGetDatasFromBeacons(bytes32[] calldata beaconIds) internal view returns (BlockData[] memory) {
+        uint256 beaconCount = beaconIds.length;
+        BlockData[] memory datas = new BlockData[](beaconCount);
+        bytes32 last = bytes32(0);
+        bytes32 current;
+        for (uint i = 0; i < beaconCount; i++) {
+            current = beaconIds[i];
+            require(current > last && isBeaconExist(current), "!beacon");
+            datas[i] = _dataFeeds[current];
+            last = current;
+        }
+        return datas;
     }
 }
