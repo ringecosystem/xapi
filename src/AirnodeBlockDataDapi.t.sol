@@ -3,13 +3,13 @@ pragma solidity ^0.8.17;
 
 import "ds-test/test.sol";
 
-import "./AirnodeDapi.sol";
+import "./AirnodeBlockDataDapi.sol";
 
-contract AirnodeDapiTest is DSTest {
-    AirnodeDapi dapi;
+contract AirnodeBlockDataDapiTest is DSTest {
+    AirnodeBlockDataDapi dapi;
 
     function setUp() public {
-        dapi = new AirnodeDapi(
+        dapi = new AirnodeBlockDataDapi(
             address(0x1),
             address(0x2),
             1e18

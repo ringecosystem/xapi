@@ -19,14 +19,14 @@ pragma solidity 0.8.17;
 
 import "./interfaces/IFeedOracle.sol";
 import "./RrpRequesterV0.sol";
-import "./AirnodeDataFeed.sol";
+import "./AirnodeBlockDataFeed.sol";
 import "@openzeppelin/contracts@4.9.2/access/Ownable2Step.sol";
 import "@openzeppelin/contracts@4.9.2/utils/structs/EnumerableSet.sol";
 
 /// @title The contract uses to serve data feeds of arbitrum finalized header
 /// @notice AirnodeDapi serves data feeds in the form of BeaconSet.
 /// The BeaconSet are only updateable using RRPv0.
-contract AirnodeDapi is IFeedOracle, Ownable2Step, RrpRequesterV0, AirnodeDataFeed {
+contract AirnodeBlockDataDapi is IFeedOracle, Ownable2Step, RrpRequesterV0, AirnodeBlockDataFeed {
     using EnumerableSet for EnumerableSet.Bytes32Set;
 
     event AddBeacon(bytes32 indexed beaconId, Beacon beacon);
