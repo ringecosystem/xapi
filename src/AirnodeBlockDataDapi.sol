@@ -169,6 +169,7 @@ contract AirnodeBlockDataDapi is IFeedOracle, Ownable2Step, RrpRequesterV0, Airn
         for (uint i = 1; i < beaconCount; i++) {
             require(eq(data, datas[i]), "!agg");
         }
+        require(data.blockNumber > _aggregatedData.blockNumber, "!new");
         _aggregatedData = data;
         emit AggregatedBlockData(data);
     }
