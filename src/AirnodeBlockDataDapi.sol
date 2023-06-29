@@ -67,26 +67,6 @@ contract AirnodeBlockDataDapi is IFeedOracle, Ownable2Step, RrpRequesterV0, Airn
         fee = fee_;
     }
 
-    /// @notice Latest aggregated arbitrum finalized header from BeaconSet
-    function latestAnswer() external view override returns (uint256 block_number, bytes32 state_root) {
-        return (_aggregatedData.blockNumber, _aggregatedData.stateRoot);
-    }
-
-    /// @notice Fetch beaconId by requestId
-    function getBeaconIdByRequestId(bytes32 requestId) external view returns (bytes32) {
-        return _requestIdToBeaconId[requestId];
-    }
-
-    /// @notice BeaconSet length
-    function beaconsLength() public view returns (uint256) {
-        return _beaconIds.length();
-    }
-
-    /// @notice Check if the beacon exist by Id
-    function isBeaconExist(bytes32 beaconId) public view returns (bool) {
-        return _beaconIds.contains(beaconId);
-    }
-
     /// @notice Add a beacon to BeaconSet
     function addBeacon(Beacon calldata beacon) external onlyOwner {
         bytes32 beaconId = deriveBeaconId(beacon);
@@ -105,10 +85,9 @@ contract AirnodeBlockDataDapi is IFeedOracle, Ownable2Step, RrpRequesterV0, Airn
         fee = fee_;
     }
 
-    /// @notice Derives the Beacon ID from the Airnode address and endpoint ID
-    /// @param beacon Beacon
-    function deriveBeaconId(Beacon calldata beacon) public pure returns (bytes32 beaconId) {
-        beaconId = keccak256(abi.encode(beacon));
+    /// @notice Latest aggregated arbitrum finalized header from BeaconSet
+    function latestAnswer() external view override returns (uint256, bytes32) {
+        return (_aggregatedData.blockNumber, _aggregatedData.stateRoot);
     }
 
     /// @notice Fetch request fee
@@ -116,6 +95,27 @@ contract AirnodeBlockDataDapi is IFeedOracle, Ownable2Step, RrpRequesterV0, Airn
     ///        fee the request fee
     function getRequestFee() external view returns (address, uint256) {
         return (address(0), fee * beaconsLength());
+    }
+
+    /// @notice Fetch beaconId by requestId
+    function getBeaconIdByRequestId(bytes32 requestId) external view returns (bytes32) {
+        return _requestIdToBeaconId[requestId];
+    }
+
+    /// @notice BeaconSet length
+    function beaconsLength() public view returns (uint256) {
+        return _beaconIds.length();
+    }
+
+    /// @notice Check if the beacon exist by Id
+    function isBeaconExist(bytes32 beaconId) public view returns (bool) {
+        return _beaconIds.contains(beaconId);
+    }
+
+    /// @notice Derives the Beacon ID from the Airnode address and endpoint ID
+    /// @param beacon Beacon
+    function deriveBeaconId(Beacon calldata beacon) public pure returns (bytes32 beaconId) {
+        beaconId = keccak256(abi.encode(beacon));
     }
 
     function _request(Beacon calldata beacon, bytes32 beaconId) internal {
@@ -134,9 +134,10 @@ contract AirnodeBlockDataDapi is IFeedOracle, Ownable2Step, RrpRequesterV0, Airn
     }
 
     /// @notice Create a request for arbitrum finalized header
-    ///         Send reqeust to each beacon in BeaconSet
+    ///         Send reqeust to all beacon in BeaconSet
     function requestFinalizedHash(Beacon[] calldata beacons) external payable {
         uint beaconCount = beacons.length;
+        require(beaconCount == beaconsLength(), "!all");
         require(msg.value == fee * beaconCount, "!fee");
         for (uint i = 0; i < beaconCount; i++) {
             bytes32 beaconId = deriveBeaconId(beacons[i]);
