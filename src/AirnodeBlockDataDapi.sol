@@ -24,6 +24,7 @@ import "@openzeppelin/contracts@4.9.2/access/Ownable2Step.sol";
 import "@openzeppelin/contracts@4.9.2/utils/structs/EnumerableSet.sol";
 
 /// @title The contract uses to serve data feeds of arbitrum finalized header
+/// @dev dAPI security model is the same as edcsa pallet.
 /// @notice AirnodeDapi serves data feeds in the form of BeaconSet.
 /// The BeaconSet are only updateable using RRPv0.
 contract AirnodeBlockDataDapi is IFeedOracle, Ownable2Step, RrpRequesterV0, AirnodeBlockDataFeed {
@@ -158,7 +159,8 @@ contract AirnodeBlockDataDapi is IFeedOracle, Ownable2Step, RrpRequesterV0, Airn
         emit AirnodeRrpCompleted(beaconId, requestId, data);
     }
 
-    /// @notice Called to aggregate the BeaconSet and save the result
+    /// @notice Called to aggregate the BeaconSet and save the result.
+    ///         beaconIds should be a supermajor(>2/3) subset of all beacons in contract.
     /// @param beaconIds Beacon IDs should be sorted in ascending order
     function aggregateBeacons(bytes32[] calldata beaconIds) external {
         uint256 beaconCount = beaconIds.length;
