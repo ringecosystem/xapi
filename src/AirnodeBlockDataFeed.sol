@@ -18,32 +18,19 @@
 pragma solidity 0.8.17;
 
 contract AirnodeBlockDataFeed {
-    event AirnodeBlockDataFeedUpdated(bytes32 indexed beaconId, BlockData data);
+    event AirnodeBlockDataFeedUpdated(bytes32 indexed beaconId, uint256 blockNumber, bytes32 msgRoot);
 
-    struct BlockData {
-        uint256 blockNumber;
-        bytes32 stateRoot;
-    }
-
-    BlockData internal _aggregatedData;
-    // beaconId => blockData
-    mapping(bytes32 => BlockData) internal _dataFeeds;
+    mapping(uint256 => bytes32) internal _aggregatedData;
+    // beaconId => blockNumber => msgRoot
+    mapping(bytes32 => mapping(uint256 => bytes32)) internal _dataFeeds;
 
     function processBeaconUpdate(bytes32 beaconId, bytes calldata data) internal {
-        BlockData memory oldData = _dataFeeds[beaconId];
-        BlockData memory newData = abi.decode(data, (BlockData));
-        if (newData.blockNumber > oldData.blockNumber) {
-            _dataFeeds[beaconId] = newData;
-            emit AirnodeBlockDataFeedUpdated(beaconId, newData);
-        }
+        (uint256 blockNumber, bytes32 msgRoot) = abi.decode(data, (uint256, bytes32));
+        _dataFeeds[beaconId][blockNumber] = msgRoot;
+        emit AirnodeBlockDataFeedUpdated(beaconId, blockNumber, msgRoot);
     }
 
-    function eq(BlockData memory a, BlockData memory b) internal pure returns (bool) {
-        return a.blockNumber == b.blockNumber && a.stateRoot == b.stateRoot;
-    }
-
-    function getDataFeedWithId(bytes32 beaconId) public view returns (uint256 blockNumber, bytes32 stateRoot) {
-        BlockData memory data = _dataFeeds[beaconId];
-        return (data.blockNumber, data.stateRoot);
+    function getDataFeedWithId(bytes32 beaconId, uint256 blockNumber) public view returns (bytes32 msgRoot) {
+        return _dataFeeds[beaconId][blockNumber];
     }
 }

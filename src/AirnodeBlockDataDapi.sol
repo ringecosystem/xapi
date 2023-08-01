@@ -34,7 +34,7 @@ contract AirnodeBlockDataDapi is IFeedOracle, Ownable2Step, RrpRequesterV0, Airn
     event RemoveBeacon(bytes32 indexed beaconId);
     event AirnodeRrpRequested(bytes32 indexed beaconId, bytes32 indexed requestId);
     event AirnodeRrpCompleted(bytes32 indexed beaconId, bytes32 indexed requestId, bytes data);
-    event AggregatedBlockData(BlockData data);
+    event AggregatedBlockData(uint256 indexed blockNumber, bytes32 msgRoot);
 
     /// @notice Beacon metadata
     /// @param airnode Airnode address
@@ -85,9 +85,8 @@ contract AirnodeBlockDataDapi is IFeedOracle, Ownable2Step, RrpRequesterV0, Airn
         fee = fee_;
     }
 
-    /// @notice Latest aggregated arbitrum finalized header from BeaconSet
-    function latestAnswer() external view override returns (uint256, bytes32) {
-        return (_aggregatedData.blockNumber, _aggregatedData.stateRoot);
+    function messageRootOf(uint256 blockNumber) external view override returns (bytes32) {
+        return _aggregatedData[blockNumber];
     }
 
     /// @notice Fetch request fee
@@ -118,7 +117,7 @@ contract AirnodeBlockDataDapi is IFeedOracle, Ownable2Step, RrpRequesterV0, Airn
         beaconId = keccak256(abi.encode(beacon));
     }
 
-    function _request(Beacon calldata beacon, bytes32 beaconId) internal {
+    function _request(Beacon calldata beacon, bytes32 beaconId, uint256 blockNumber) internal {
         beacon.sponsorWallet.transfer(fee);
         bytes32 requestId = airnodeRrp.makeFullRequest(
             beacon.airnode,
@@ -127,7 +126,7 @@ contract AirnodeBlockDataDapi is IFeedOracle, Ownable2Step, RrpRequesterV0, Airn
             beacon.sponsorWallet,
             address(this),
             this.fulfill.selector,
-            ""
+            abi.encodePacked(blockNumber)
         );
         _requestIdToBeaconId[requestId] = beaconId;
         emit AirnodeRrpRequested(beaconId, requestId);
@@ -135,14 +134,14 @@ contract AirnodeBlockDataDapi is IFeedOracle, Ownable2Step, RrpRequesterV0, Airn
 
     /// @notice Create a request for arbitrum finalized header
     ///         Send reqeust to all beacon in BeaconSet
-    function requestFinalizedHash(Beacon[] calldata beacons) external payable {
+    function requestFinalizedHash(uint256 blockNumber, Beacon[] calldata beacons) external payable {
         uint beaconCount = beacons.length;
         require(beaconCount == beaconsLength(), "!all");
         require(msg.value == fee * beaconCount, "!fee");
         for (uint i = 0; i < beaconCount; i++) {
             bytes32 beaconId = deriveBeaconId(beacons[i]);
             require(isBeaconExist(beaconId), "!exist");
-            _request(beacons[i], beaconId);
+            _request(beacons[i], beaconId, blockNumber);
         }
     }
 
@@ -163,29 +162,28 @@ contract AirnodeBlockDataDapi is IFeedOracle, Ownable2Step, RrpRequesterV0, Airn
     /// @notice Called to aggregate the BeaconSet and save the result.
     ///         beaconIds should be a supermajor(>2/3) subset of all beacons in contract.
     /// @param beaconIds Beacon IDs should be sorted in ascending order
-    function aggregateBeacons(bytes32[] calldata beaconIds) external {
+    function aggregateBeacons(uint256 blockNumber, bytes32[] calldata beaconIds) external {
         uint256 beaconCount = beaconIds.length;
         bytes32[] memory allBeaconIds = _beaconIds.values();
         require(beaconCount * 3 > allBeaconIds.length * 2, "!supermajor");
-        BlockData[] memory datas = _checkAndGetDatasFromBeacons(beaconIds);
-        BlockData memory data = datas[0];
+        bytes32[] memory datas = _checkAndGetDatasFromBeacons(blockNumber, beaconIds);
+        bytes32 data = datas[0];
         for (uint i = 1; i < beaconCount; i++) {
-            require(eq(data, datas[i]), "!agg");
+            require(data == datas[i], "!agg");
         }
-        require(data.blockNumber > _aggregatedData.blockNumber, "!new");
-        _aggregatedData = data;
-        emit AggregatedBlockData(data);
+        _aggregatedData[blockNumber] = data;
+        emit AggregatedBlockData(blockNumber, data);
     }
 
-    function _checkAndGetDatasFromBeacons(bytes32[] calldata beaconIds) internal view returns (BlockData[] memory) {
+    function _checkAndGetDatasFromBeacons(uint256 blockNumber, bytes32[] calldata beaconIds) internal view returns (bytes32[] memory) {
         uint256 beaconCount = beaconIds.length;
-        BlockData[] memory datas = new BlockData[](beaconCount);
+        bytes32[] memory datas = new bytes32[](beaconCount);
         bytes32 last = bytes32(0);
         bytes32 current;
         for (uint i = 0; i < beaconCount; i++) {
             current = beaconIds[i];
             require(current > last && isBeaconExist(current), "!beacon");
-            datas[i] = _dataFeeds[current];
+            datas[i] = _dataFeeds[current][blockNumber];
             last = current;
         }
         return datas;
