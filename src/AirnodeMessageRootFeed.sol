@@ -17,8 +17,8 @@
 
 pragma solidity 0.8.17;
 
-contract AirnodeBlockDataFeed {
-    event AirnodeBlockDataFeedUpdated(bytes32 indexed beaconId, uint256 blockNumber, bytes32 msgRoot);
+contract AirnodeMessageRootFeed {
+    event AirnodeMessageRootFeedUpdated(bytes32 indexed beaconId, uint256 blockNumber, bytes32 msgRoot);
 
     mapping(uint256 => bytes32) internal _aggregatedData;
     // beaconId => blockNumber => msgRoot
@@ -27,7 +27,7 @@ contract AirnodeBlockDataFeed {
     function processBeaconUpdate(bytes32 beaconId, bytes calldata data) internal {
         (uint256 blockNumber, bytes32 msgRoot) = abi.decode(data, (uint256, bytes32));
         _dataFeeds[beaconId][blockNumber] = msgRoot;
-        emit AirnodeBlockDataFeedUpdated(beaconId, blockNumber, msgRoot);
+        emit AirnodeMessageRootFeedUpdated(beaconId, blockNumber, msgRoot);
     }
 
     function getDataFeedWithId(bytes32 beaconId, uint256 blockNumber) public view returns (bytes32 msgRoot) {

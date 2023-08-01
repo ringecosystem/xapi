@@ -19,7 +19,7 @@ pragma solidity 0.8.17;
 
 import "./interfaces/IFeedOracle.sol";
 import "./RrpRequesterV0.sol";
-import "./AirnodeBlockDataFeed.sol";
+import "./AirnodeMessageRootFeed.sol";
 import "@openzeppelin/contracts@4.9.2/access/Ownable2Step.sol";
 import "@openzeppelin/contracts@4.9.2/utils/structs/EnumerableSet.sol";
 
@@ -27,7 +27,7 @@ import "@openzeppelin/contracts@4.9.2/utils/structs/EnumerableSet.sol";
 /// @dev dAPI security model is the same as edcsa pallet.
 /// @notice AirnodeDapi serves data feeds in the form of BeaconSet.
 /// The BeaconSet are only updateable using RRPv0.
-contract AirnodeBlockDataDapi is IFeedOracle, Ownable2Step, RrpRequesterV0, AirnodeBlockDataFeed {
+contract AirnodeMessageRootDapi is IFeedOracle, Ownable2Step, RrpRequesterV0, AirnodeMessageRootFeed {
     using EnumerableSet for EnumerableSet.Bytes32Set;
 
     event AddBeacon(bytes32 indexed beaconId, Beacon beacon);
