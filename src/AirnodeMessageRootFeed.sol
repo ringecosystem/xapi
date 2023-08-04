@@ -18,19 +18,19 @@
 pragma solidity 0.8.17;
 
 contract AirnodeMessageRootFeed {
-    event AirnodeMessageRootFeedUpdated(bytes32 indexed beaconId, uint256 blockNumber, bytes32 msgRoot);
+    event AirnodeMessageRootFeedUpdated(bytes32 indexed beaconId, bytes32 msgRoot);
 
-    mapping(uint256 => bytes32) internal _aggregatedData;
-    // beaconId => blockNumber => msgRoot
-    mapping(bytes32 => mapping(uint256 => bytes32)) internal _dataFeeds;
+    bytes32 internal _aggregatedData;
+    // beaconId => msgRoot
+    mapping(bytes32 => bytes32) internal _dataFeeds;
 
     function processBeaconUpdate(bytes32 beaconId, bytes calldata data) internal {
-        (uint256 blockNumber, bytes32 msgRoot) = abi.decode(data, (uint256, bytes32));
-        _dataFeeds[beaconId][blockNumber] = msgRoot;
-        emit AirnodeMessageRootFeedUpdated(beaconId, blockNumber, msgRoot);
+        (bytes32 msgRoot) = abi.decode(data, (bytes32));
+        _dataFeeds[beaconId] = msgRoot;
+        emit AirnodeMessageRootFeedUpdated(beaconId, msgRoot);
     }
 
-    function getDataFeedWithId(bytes32 beaconId, uint256 blockNumber) public view returns (bytes32 msgRoot) {
-        return _dataFeeds[beaconId][blockNumber];
+    function getDataFeedWithId(bytes32 beaconId) public view returns (bytes32 msgRoot) {
+        return _dataFeeds[beaconId];
     }
 }

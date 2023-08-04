@@ -34,7 +34,7 @@ contract AirnodeMessageRootDapi is IFeedOracle, Ownable2Step, RrpRequesterV0, Ai
     event RemoveBeacon(bytes32 indexed beaconId);
     event AirnodeRrpRequested(bytes32 indexed beaconId, bytes32 indexed requestId);
     event AirnodeRrpCompleted(bytes32 indexed beaconId, bytes32 indexed requestId, bytes data);
-    event AggregatedBlockData(uint256 indexed blockNumber, bytes32 msgRoot);
+    event AggregatedBlockData(bytes32 msgRoot);
 
     /// @notice Beacon metadata
     /// @param airnode Airnode address
@@ -52,6 +52,8 @@ contract AirnodeMessageRootDapi is IFeedOracle, Ownable2Step, RrpRequesterV0, Ai
     uint256 public fee;
     // requestId => beaconId
     mapping(bytes32 => bytes32) private _requestIdToBeaconId;
+    // beaconId => requestId
+    mapping(bytes32 => bytes32) private _beaconIdToRequestId;
     // beaconIdSet
     EnumerableSet.Bytes32Set private _beaconIds;
 
@@ -85,8 +87,8 @@ contract AirnodeMessageRootDapi is IFeedOracle, Ownable2Step, RrpRequesterV0, Ai
         fee = fee_;
     }
 
-    function messageRootOf(uint256 blockNumber) external view override returns (bytes32) {
-        return _aggregatedData[blockNumber];
+    function messageRoot() external view override returns (bytes32) {
+        return _aggregatedData;
     }
 
     /// @notice Fetch request fee
@@ -99,6 +101,11 @@ contract AirnodeMessageRootDapi is IFeedOracle, Ownable2Step, RrpRequesterV0, Ai
     /// @notice Fetch beaconId by requestId
     function getBeaconIdByRequestId(bytes32 requestId) external view returns (bytes32) {
         return _requestIdToBeaconId[requestId];
+    }
+
+    /// @notice Fetch requestId by beaconId
+    function getRequestIdByBeaconId(bytes32 beaconId) external view returns (bytes32) {
+        return _beaconIdToRequestId[beaconId];
     }
 
     /// @notice BeaconSet length
@@ -117,7 +124,7 @@ contract AirnodeMessageRootDapi is IFeedOracle, Ownable2Step, RrpRequesterV0, Ai
         beaconId = keccak256(abi.encode(beacon));
     }
 
-    function _request(Beacon calldata beacon, bytes32 beaconId, uint256 blockNumber) internal {
+    function _request(Beacon calldata beacon, bytes32 beaconId) internal {
         beacon.sponsorWallet.transfer(fee);
         bytes32 requestId = airnodeRrp.makeFullRequest(
             beacon.airnode,
@@ -126,22 +133,23 @@ contract AirnodeMessageRootDapi is IFeedOracle, Ownable2Step, RrpRequesterV0, Ai
             beacon.sponsorWallet,
             address(this),
             this.fulfill.selector,
-            abi.encodePacked(blockNumber)
+            ""
         );
         _requestIdToBeaconId[requestId] = beaconId;
+        _beaconIdToRequestId[beaconId] = requestId;
         emit AirnodeRrpRequested(beaconId, requestId);
     }
 
     /// @notice Create a request for arbitrum finalized header
     ///         Send reqeust to all beacon in BeaconSet
-    function requestFinalizedHash(uint256 blockNumber, Beacon[] calldata beacons) external payable {
+    function requestFinalizedHash(Beacon[] calldata beacons) external payable {
         uint beaconCount = beacons.length;
         require(beaconCount == beaconsLength(), "!all");
         require(msg.value == fee * beaconCount, "!fee");
         for (uint i = 0; i < beaconCount; i++) {
             bytes32 beaconId = deriveBeaconId(beacons[i]);
             require(isBeaconExist(beaconId), "!exist");
-            _request(beacons[i], beaconId, blockNumber);
+            _request(beacons[i], beaconId);
         }
     }
 
@@ -154,28 +162,34 @@ contract AirnodeMessageRootDapi is IFeedOracle, Ownable2Step, RrpRequesterV0, Ai
     ) external onlyAirnodeRrp {
         bytes32 beaconId = _requestIdToBeaconId[requestId];
         require(beaconId != bytes32(0), "!requestId");
-        delete _requestIdToBeaconId[requestId];
-        processBeaconUpdate(beaconId, data);
-        emit AirnodeRrpCompleted(beaconId, requestId, data);
+        if (_beaconIdToRequestId[beaconId] == bytes32(0)) {
+            delete _requestIdToBeaconId[requestId];
+        } else {
+            delete _requestIdToBeaconId[requestId];
+            delete _beaconIdToRequestId[beaconId];
+            processBeaconUpdate(beaconId, data);
+            emit AirnodeRrpCompleted(beaconId, requestId, data);
+        }
     }
 
     /// @notice Called to aggregate the BeaconSet and save the result.
     ///         beaconIds should be a supermajor(>2/3) subset of all beacons in contract.
     /// @param beaconIds Beacon IDs should be sorted in ascending order
-    function aggregateBeacons(uint256 blockNumber, bytes32[] calldata beaconIds) external {
+    function aggregateBeacons(bytes32[] calldata beaconIds) external {
         uint256 beaconCount = beaconIds.length;
         bytes32[] memory allBeaconIds = _beaconIds.values();
         require(beaconCount * 3 > allBeaconIds.length * 2, "!supermajor");
-        bytes32[] memory datas = _checkAndGetDatasFromBeacons(blockNumber, beaconIds);
+        bytes32[] memory datas = _checkAndGetDatasFromBeacons(beaconIds);
         bytes32 data = datas[0];
         for (uint i = 1; i < beaconCount; i++) {
             require(data == datas[i], "!agg");
         }
-        _aggregatedData[blockNumber] = data;
-        emit AggregatedBlockData(blockNumber, data);
+        require(_aggregatedData != data, "same");
+        _aggregatedData = data;
+        emit AggregatedBlockData(data);
     }
 
-    function _checkAndGetDatasFromBeacons(uint256 blockNumber, bytes32[] calldata beaconIds) internal view returns (bytes32[] memory) {
+    function _checkAndGetDatasFromBeacons(bytes32[] calldata beaconIds) internal view returns (bytes32[] memory) {
         uint256 beaconCount = beaconIds.length;
         bytes32[] memory datas = new bytes32[](beaconCount);
         bytes32 last = bytes32(0);
@@ -183,7 +197,7 @@ contract AirnodeMessageRootDapi is IFeedOracle, Ownable2Step, RrpRequesterV0, Ai
         for (uint i = 0; i < beaconCount; i++) {
             current = beaconIds[i];
             require(current > last && isBeaconExist(current), "!beacon");
-            datas[i] = _dataFeeds[current][blockNumber];
+            datas[i] = _dataFeeds[current];
             last = current;
         }
         return datas;
