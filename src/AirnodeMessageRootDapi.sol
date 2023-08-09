@@ -34,7 +34,7 @@ contract AirnodeMessageRootDapi is IFeedOracle, Ownable2Step, RrpRequesterV0, Ai
     event RemoveBeacon(bytes32 indexed beaconId);
     event AirnodeRrpRequested(bytes32 indexed beaconId, bytes32 indexed requestId);
     event AirnodeRrpCompleted(bytes32 indexed beaconId, bytes32 indexed requestId, bytes data);
-    event AggregatedBlockData(bytes32 msgRoot);
+    event AggregatedMessageRoot(bytes32 msgRoot);
 
     /// @notice Beacon metadata
     /// @param airnode Airnode address
@@ -186,7 +186,7 @@ contract AirnodeMessageRootDapi is IFeedOracle, Ownable2Step, RrpRequesterV0, Ai
         }
         require(_aggregatedData != data, "same");
         _aggregatedData = data;
-        emit AggregatedBlockData(data);
+        emit AggregatedMessageRoot(data);
     }
 
     function _checkAndGetDatasFromBeacons(bytes32[] calldata beaconIds) internal view returns (bytes32[] memory) {
