@@ -162,7 +162,8 @@ contract AirnodeMessageRootDapi is IFeedOracle, Ownable2Step, RrpRequesterV0, Ai
     ) external onlyAirnodeRrp {
         bytes32 beaconId = _requestIdToBeaconId[requestId];
         require(beaconId != bytes32(0), "!requestId");
-        if (_beaconIdToRequestId[beaconId] == bytes32(0)) {
+        if (_beaconIdToRequestId[beaconId] != requestId ||
+            _beaconIdToRequestId[beaconId] == bytes32(0)) {
             delete _requestIdToBeaconId[requestId];
         } else {
             delete _requestIdToBeaconId[requestId];
