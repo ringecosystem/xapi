@@ -5,12 +5,12 @@ labels: ["application"]
 assignees:
   - hujw77
 body:
-  - type: input
-    id: http-gateway
+  - type: textarea
+    id: endpoints
     attributes:
-      label: HTTP gateway
-      description: HTTP (testing) gateway listening for request
-      placeholder: ex. http://airnode.test/http-data/01234567-abcd-abcd-abcd-012345678abc/:endpointId
+      label: Endpoints & gateway & params
+      description: Tell us what services your airnode can provide, you can get these from your airnode config
+      placeholder: ex. EndpointId: 0x23e5743c946604a779a5181a1bf621076cd11687a1f21c8bc2fa483bd704b3ab, EndpointName: ArbitrumGoerliMessageRoot, HttpGateway: http://111.111.111.111:3000/http-data/01234567-abcd-abcd-abcd-012345678abc/0x23e5743c946604a779a5181a1bf621076cd11687a1f21c8bc2fa483bd704b3ab, Params: {"parameters": {}}
     validations:
       required: true
   - type: input
@@ -38,9 +38,17 @@ body:
     validations:
       required: true
   - type: input
+    id: sponsor-address
+    attributes:
+      label: Sponsor address
+      description: Sponsor address
+      placeholder: ex. 0x1234...
+    validations:
+      required: true
+  - type: input
     id: rewards-wallet
     attributes:
-      label: Your wallet address
+      label: Your wallet for rewards
       description: Address to receive rewards
       placeholder: ex. 0x1234...
     validations:
