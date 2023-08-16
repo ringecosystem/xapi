@@ -57,14 +57,20 @@ contract AirnodeMessageRootDapi is IFeedOracle, Ownable2Step, RrpRequesterV0, Ai
     // beaconIdSet
     EnumerableSet.Bytes32Set private _beaconIds;
 
+    // name for dapi
+    string public name;
+
+    /// @param name_ Airnode dapi name
     /// @param airnodeRrp Airnode RRP address
     /// @param dao Airnode Dao
     /// @param fee_ Beacon request fee for gas
     constructor(
+        string memory name_,
         address airnodeRrp,
         address dao,
         uint256 fee_
     ) RrpRequesterV0(airnodeRrp) {
+        name = name_;
         _transferOwnership(dao);
         fee = fee_;
     }
