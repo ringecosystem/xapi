@@ -26,7 +26,7 @@ pangolin_endpointId=0xe7fe8a321e9c000326638d5187a650e3f9d0652f30a01ad9ae4a60327e
 
 pangolin_data=$(set -x; ethabi encode params \
   -v "(address,bytes32,address,address)" \
-  "(${airnode:2},${arbitest_endpointId:2},${sponsor:2},${sponsorWallet:2})")
+  "(${airnode:2},${pangolin_endpointId:2},${sponsor:2},${sponsorWallet:2})")
 
 pangolin_sig=$(cast sig "addBeacon((address,bytes32,address,address))")
 (set -x; seth send $pangolin_dapi $pangolin_sig$pangolin_data --chain $pangolin_chain)

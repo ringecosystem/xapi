@@ -3,8 +3,8 @@
 set -eo pipefail
 
 airnode=0xbaA142d0464031990725F0ABfA9dA0e24298650e
-sponsor=0xD93E82b9969CC9a016Bc58f5D1D7f83918fd9C79
-sponsorWallet=0xeC16f8AfFeb57687357c01eF1645392a4c00644D
+sponsor=0xbaA142d0464031990725F0ABfA9dA0e24298650e
+sponsorWallet=0x9953D51b3f6A60073737a6De94a19d361108F8Ec
 
 arbitest_chain=arbitest
 arbitest_dapi=0xa681492DBAd5a3999cFCE2d72196d5784dd08D0c
@@ -24,7 +24,7 @@ pangolin_endpointId=0xe7fe8a321e9c000326638d5187a650e3f9d0652f30a01ad9ae4a60327e
 
 pangolin_data=$(set -x; ethabi encode params \
   -v "(address,bytes32,address,address)" \
-  "(${airnode:2},${arbitest_endpointId:2},${sponsor:2},${sponsorWallet:2})")
+  "(${airnode:2},${pangolin_endpointId:2},${sponsor:2},${sponsorWallet:2})")
 
 pangolin_sig=$(cast sig "addBeacon((address,bytes32,address,address))")
 (set -x; seth send $pangolin_dapi $pangolin_sig$pangolin_data --chain $pangolin_chain)
