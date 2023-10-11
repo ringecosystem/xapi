@@ -4,22 +4,23 @@ pragma solidity 0.8.17;
 
 import "./interfaces/IFeedOracle.sol";
 import "./RrpRequesterV0.sol";
-import "./AirnodeMessageRootFeed.sol";
+import "./SubAPIFeed.sol";
 import "@openzeppelin/contracts@4.9.2/access/Ownable2Step.sol";
 import "@openzeppelin/contracts@4.9.2/utils/structs/EnumerableSet.sol";
 
-/// @title The contract uses to serve data feeds of arbitrum finalized header
-/// @dev dAPI security model is the same as edcsa pallet.
-/// @notice AirnodeDapi serves data feeds in the form of BeaconSet.
+/// @title SubAPI
+/// @dev The contract uses to serve data feeds of source chain finalized header
+/// dAPI security model is the same as edcsa pallet.
+/// @notice SubAPI serves data feeds in the form of BeaconSet.
 /// The BeaconSet are only updateable using RRPv0.
-contract AirnodeMessageRootDapi is IFeedOracle, Ownable2Step, RrpRequesterV0, AirnodeMessageRootFeed {
+contract SubAPI is IFeedOracle, Ownable2Step, RrpRequesterV0, SubAPIFeed {
     using EnumerableSet for EnumerableSet.Bytes32Set;
 
     event AddBeacon(bytes32 indexed beaconId, Beacon beacon);
     event RemoveBeacon(bytes32 indexed beaconId);
     event AirnodeRrpRequested(bytes32 indexed beaconId, bytes32 indexed requestId);
     event AirnodeRrpCompleted(bytes32 indexed beaconId, bytes32 indexed requestId, bytes data);
-    event AggregatedMessageRoot(bytes32 msgRoot);
+    event AggregatedORMPData(ORMPData ormpData);
 
     /// @notice Beacon metadata
     /// @param airnode Airnode address
@@ -42,7 +43,7 @@ contract AirnodeMessageRootDapi is IFeedOracle, Ownable2Step, RrpRequesterV0, Ai
     // beaconIdSet
     EnumerableSet.Bytes32Set private _beaconIds;
 
-    // name for dapi
+    // name for subAPI
     string public name;
 
     /// @param name_ Airnode dapi name
@@ -73,8 +74,12 @@ contract AirnodeMessageRootDapi is IFeedOracle, Ownable2Step, RrpRequesterV0, Ai
         fee = fee_;
     }
 
-    function messageRoot() external view override returns (bytes32) {
+    function remoteCommitment() external view returns (ORMPData memory) {
         return _aggregatedData;
+    }
+
+    function messageRoot() external view returns (bytes32) {
+        return _aggregatedData.root;
     }
 
     /// @notice Fetch request fee
@@ -162,19 +167,19 @@ contract AirnodeMessageRootDapi is IFeedOracle, Ownable2Step, RrpRequesterV0, Ai
         uint256 beaconCount = beaconIds.length;
         bytes32[] memory allBeaconIds = _beaconIds.values();
         require(beaconCount * 3 > allBeaconIds.length * 2, "!supermajor");
-        bytes32[] memory datas = _checkAndGetDatasFromBeacons(beaconIds);
-        bytes32 data = datas[0];
+        ORMPData[] memory datas = _checkAndGetDatasFromBeacons(beaconIds);
+        ORMPData memory data = datas[0];
         for (uint256 i = 1; i < beaconCount; i++) {
-            require(data == datas[i], "!agg");
+            require(eq(data, datas[i]), "!agg");
         }
-        require(_aggregatedData != data, "same");
+        require(neq(_aggregatedData, data), "same");
         _aggregatedData = data;
-        emit AggregatedMessageRoot(data);
+        emit AggregatedORMPData(data);
     }
 
-    function _checkAndGetDatasFromBeacons(bytes32[] calldata beaconIds) internal view returns (bytes32[] memory) {
+    function _checkAndGetDatasFromBeacons(bytes32[] calldata beaconIds) internal view returns (ORMPData[] memory) {
         uint256 beaconCount = beaconIds.length;
-        bytes32[] memory datas = new bytes32[](beaconCount);
+        ORMPData[] memory datas = new ORMPData[](beaconCount);
         bytes32 last = bytes32(0);
         bytes32 current;
         for (uint256 i = 0; i < beaconCount; i++) {
