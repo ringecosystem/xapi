@@ -2,18 +2,19 @@
 
 pragma solidity 0.8.17;
 
+import "@openzeppelin/contracts@4.9.2/utils/structs/EnumerableSet.sol";
+import "@openzeppelin/contracts@4.9.2/access/Ownable2Step.sol";
 import "./interfaces/IFeedOracle.sol";
 import "./RrpRequesterV0.sol";
+import "./ORMPWrapper.sol";
 import "./SubAPIFeed.sol";
-import "@openzeppelin/contracts@4.9.2/access/Ownable2Step.sol";
-import "@openzeppelin/contracts@4.9.2/utils/structs/EnumerableSet.sol";
 
 /// @title SubAPI
 /// @dev The contract uses to serve data feeds of source chain finalized header
 /// dAPI security model is the same as edcsa pallet.
 /// @notice SubAPI serves data feeds in the form of BeaconSet.
 /// The BeaconSet are only updateable using RRPv0.
-contract SubAPI is IFeedOracle, Ownable2Step, RrpRequesterV0, SubAPIFeed {
+contract SubAPI is IFeedOracle, Ownable2Step, RrpRequesterV0, SubAPIFeed, ORMPWrapper {
     using EnumerableSet for EnumerableSet.Bytes32Set;
 
     event AddBeacon(bytes32 indexed beaconId, Beacon beacon);
@@ -74,8 +75,9 @@ contract SubAPI is IFeedOracle, Ownable2Step, RrpRequesterV0, SubAPIFeed {
         fee = fee_;
     }
 
-    function remoteCommitment() external view returns (ORMPData memory) {
-        return _aggregatedData;
+    function remoteCommitment() external view returns (uint256 count, bytes32 root) {
+        count = _aggregatedData.count;
+        root = _aggregatedData.root;
     }
 
     function messageRoot() external view returns (bytes32) {

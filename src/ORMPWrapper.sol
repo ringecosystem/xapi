@@ -14,7 +14,7 @@ contract ORMPWrapper {
         ORMP = ormp;
     }
 
-    function commitment() external view returns (uint256 count, bytes32 root) {
+    function localCommitment() external view returns (uint256 count, bytes32 root) {
         count = IORMP(ORMP).messageCount();
         root = IORMP(ORMP).root();
     }
