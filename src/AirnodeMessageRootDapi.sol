@@ -1,19 +1,4 @@
-// This file is part of Darwinia.
-// Copyright (C) 2018-2022 Darwinia Network
-// SPDX-License-Identifier: GPL-3.0
-//
-// Darwinia is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-//
-// Darwinia is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-// GNU General Public License for more details.
-//
-// You should have received a copy of the GNU General Public License
-// along with Darwinia. If not, see <https://www.gnu.org/licenses/>.
+// SPDX-License-Identifier: MIT
 
 pragma solidity 0.8.17;
 
@@ -64,12 +49,7 @@ contract AirnodeMessageRootDapi is IFeedOracle, Ownable2Step, RrpRequesterV0, Ai
     /// @param airnodeRrp Airnode RRP address
     /// @param dao Airnode Dao
     /// @param fee_ Beacon request fee for gas
-    constructor(
-        string memory name_,
-        address airnodeRrp,
-        address dao,
-        uint256 fee_
-    ) RrpRequesterV0(airnodeRrp) {
+    constructor(string memory name_, address airnodeRrp, address dao, uint256 fee_) RrpRequesterV0(airnodeRrp) {
         name = name_;
         _transferOwnership(dao);
         fee = fee_;
@@ -149,10 +129,10 @@ contract AirnodeMessageRootDapi is IFeedOracle, Ownable2Step, RrpRequesterV0, Ai
     /// @notice Create a request for arbitrum finalized header
     ///         Send reqeust to all beacon in BeaconSet
     function requestFinalizedHash(Beacon[] calldata beacons) external payable {
-        uint beaconCount = beacons.length;
+        uint256 beaconCount = beacons.length;
         require(beaconCount == beaconsLength(), "!all");
         require(msg.value == fee * beaconCount, "!fee");
-        for (uint i = 0; i < beaconCount; i++) {
+        for (uint256 i = 0; i < beaconCount; i++) {
             bytes32 beaconId = deriveBeaconId(beacons[i]);
             require(isBeaconExist(beaconId), "!exist");
             _request(beacons[i], beaconId);
@@ -162,10 +142,7 @@ contract AirnodeMessageRootDapi is IFeedOracle, Ownable2Step, RrpRequesterV0, Ai
     /// @notice  Called by the ArinodeRRP to fulfill the request
     /// @param requestId Request ID
     /// @param data Fulfillment data (`BlockData` encoded in contract ABI)
-    function fulfill(
-        bytes32 requestId,
-        bytes calldata data
-    ) external onlyAirnodeRrp {
+    function fulfill(bytes32 requestId, bytes calldata data) external onlyAirnodeRrp {
         bytes32 beaconId = _requestIdToBeaconId[requestId];
         require(beaconId != bytes32(0), "!requestId");
         if (_beaconIdToRequestId[beaconId] == requestId) {
@@ -187,7 +164,7 @@ contract AirnodeMessageRootDapi is IFeedOracle, Ownable2Step, RrpRequesterV0, Ai
         require(beaconCount * 3 > allBeaconIds.length * 2, "!supermajor");
         bytes32[] memory datas = _checkAndGetDatasFromBeacons(beaconIds);
         bytes32 data = datas[0];
-        for (uint i = 1; i < beaconCount; i++) {
+        for (uint256 i = 1; i < beaconCount; i++) {
             require(data == datas[i], "!agg");
         }
         require(_aggregatedData != data, "same");
@@ -200,7 +177,7 @@ contract AirnodeMessageRootDapi is IFeedOracle, Ownable2Step, RrpRequesterV0, Ai
         bytes32[] memory datas = new bytes32[](beaconCount);
         bytes32 last = bytes32(0);
         bytes32 current;
-        for (uint i = 0; i < beaconCount; i++) {
+        for (uint256 i = 0; i < beaconCount; i++) {
             current = beaconIds[i];
             require(current > last && isBeaconExist(current), "!beacon");
             datas[i] = _dataFeeds[current];
