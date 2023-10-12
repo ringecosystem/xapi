@@ -34,6 +34,8 @@ contract SubAPI is IFeedOracle, RrpRequesterV0, SubAPIFeed, ORMPWrapper {
         address payable sponsorWallet;
     }
 
+    // name for subAPI
+    string public name;
     // fee pay to beacon sponsor wallet address for gas
     uint256 public fee;
     // requestId => beaconId
@@ -42,9 +44,6 @@ contract SubAPI is IFeedOracle, RrpRequesterV0, SubAPIFeed, ORMPWrapper {
     mapping(bytes32 => bytes32) private _beaconIdToRequestId;
     // beaconIdSet
     EnumerableSet.Bytes32Set private _beaconIds;
-
-    // name for subAPI
-    string public name;
 
     /// @param dao SubAPIDao
     /// @param ormp ORMP RRP address
