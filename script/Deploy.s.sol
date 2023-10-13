@@ -13,13 +13,13 @@ interface III {
     function pendingOwner() external view returns (address);
 }
 
-contract DeployScript is Common {
+contract Deploy is Common {
     using stdJson for string;
     using ScriptTools for string;
 
     address immutable ORMP = 0x0000000000BD9dcFDa5C60697039E2b3B28b079b;
-    address immutable ADDR = 0x0000001207bC87Df42403F0898efBF79A28222BE;
-    bytes32 immutable SALT = 0xa526e97cd16eef26d31b69f973d0d6d4909370e9fdf2fdf0061c1993e4f6cc21;
+    address immutable ADDR = 0x001cE72AC64a1C46E0AE510d029CeaC7A055239E;
+    bytes32 immutable SALT = 0x11fd8cd6d12f9c388e5ae6d58ddc321b7f063f5b2e141c20613cdb91fd901934;
 
     string config;
     string instanceId;

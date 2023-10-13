@@ -14,7 +14,7 @@ interface III {
     function setAirnodeRrp(address _airnodeRrp) external;
 }
 
-contract ConfigScript is Common {
+contract Config is Common {
     using stdJson for string;
     using ScriptTools for string;
 
