@@ -1,2 +1,9 @@
+.env
+/docs
 /out
 /cache
+/artifacts
+/broadcast
+deployments/*/.deploy
+/script/output/*/*.json
+!/script/output/*/*-latest.json

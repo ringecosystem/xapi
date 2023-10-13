@@ -9,7 +9,7 @@ ormp=0x0000000000BD9dcFDa5C60697039E2b3B28b079b
 out_dir=$PWD/out
 bytecode=$(jq -r '.bytecode.object' $out_dir/SubAPI.sol/SubAPI.json)
 
-args=$(ethabi encode params -v address ${ormp:2})
+args=$(ethabi encode params -v address ${deployer:2} -v address ${ormp:2})
 initcode=$bytecode$args
 
 out=$(cast create2 -i $initcode -d $create2 --starts-with "00" | grep -E '(Address:|Salt:)')

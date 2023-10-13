@@ -1,5 +1,7 @@
 .PHONY: all clean fmt test salt deploy
 
+-include .env
+
 all    :; @forge build
 clean  :; @forge clean
 fmt    :; @forge fmt
