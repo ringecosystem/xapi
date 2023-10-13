@@ -49,6 +49,7 @@ contract DeployScript is Common {
         setConfig();
 
         ScriptTools.exportContract(outputName, "DAO", dao);
+        ScriptTools.exportContract(outputName, "SUBAPI", ADDR);
     }
 
     function deploy() public broadcast returns (address) {
