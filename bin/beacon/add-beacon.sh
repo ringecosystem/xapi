@@ -2,9 +2,9 @@
 
 set -eo pipefail
 
-airnode=0x9E1D2311c407AD0953f6BAa51209C014729D8343
-sponsor=0x9E1D2311c407AD0953f6BAa51209C014729D8343
-sponsorWallet=0x064115a572aCCacD5bb39236C46eE8A1D0631182
+airnode=${1:?}
+sponsor=${2:?}
+sponsorWallet=${3:?}
 
 arbitest_chain=arbitest
 arbitest_dapi=0xa681492DBAd5a3999cFCE2d72196d5784dd08D0c

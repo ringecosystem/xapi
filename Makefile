@@ -1,4 +1,10 @@
-all    :; dapp build
-clean  :; dapp clean
-test   :; dapp test
-deploy :; dapp create AirnodeMessageRootDapi '"pangolin message root dAPI"' ${RRP} ${DAO} 2000000000000000000
+.PHONY: all clean fmt test salt deploy
+
+-include .env
+
+all    :; @forge build
+clean  :; @forge clean
+fmt    :; @forge fmt
+test   :; @forge test
+salt   :; @./bin/salt.sh
+deploy :; @./bin/deploy.sh
