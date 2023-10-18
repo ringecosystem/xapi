@@ -1,4 +1,4 @@
-.PHONY: all clean fmt test salt deploy
+.PHONY: all clean fmt test salt deploy config
 
 -include .env
 
@@ -8,3 +8,4 @@ fmt    :; @forge fmt
 test   :; @forge test
 salt   :; @./bin/salt.sh
 deploy :; @./bin/deploy.sh
+config :; @./bin/config.sh

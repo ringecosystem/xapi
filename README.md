@@ -3,4 +3,4 @@
 | Contract     | Canonical Cross-chain Deployment Address     |
 | ------------ | -------------------------------------------- |
 | ORMP         | 0x0000000000BD9dcFDa5C60697039E2b3B28b079b   |
-| SubAPI       | 0x00043b475D815bA0269786e2edC908209b778Fa8   |
+| SubAPI       | 0x0000004ceCaeaa6ffbB4D2C9E0Cb768a30F7CF46   |
