@@ -12,7 +12,7 @@ bytecode=$(jq -r '.bytecode.object' $out_dir/SubAPI.sol/SubAPI.json)
 args=$(ethabi encode params -v address ${deployer:2} -v address ${ormp:2})
 initcode=$bytecode$args
 
-out=$(cast create2 -i $initcode -d $create2 --starts-with "00000000000000" | grep -E '(Address:|Salt:)')
+out=$(cast create2 -i $initcode -d $create2 --starts-with "00" | grep -E '(Address:|Salt:)')
 addr=$(echo $out | awk '{print $2}' )
 salt=$(cast --to-uint256 $(echo $out | awk '{print $4}' ))
 echo -e "SubAPI: \n Addr: $addr \n Salt: $salt"
