@@ -3,47 +3,17 @@
     "inputs": [
       {
         "internalType": "address",
-        "name": "airnodeRrp",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
         "name": "dao",
         "type": "address"
       },
       {
-        "internalType": "uint256",
-        "name": "fee_",
-        "type": "uint256"
+        "internalType": "address",
+        "name": "ormp",
+        "type": "address"
       }
     ],
     "stateMutability": "nonpayable",
     "type": "constructor"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "components": [
-          {
-            "internalType": "uint256",
-            "name": "blockNumber",
-            "type": "uint256"
-          },
-          {
-            "internalType": "bytes32",
-            "name": "stateRoot",
-            "type": "bytes32"
-          }
-        ],
-        "indexed": false,
-        "internalType": "struct AirnodeDataFeed.BlockData",
-        "name": "data",
-        "type": "tuple"
-      }
-    ],
-    "name": "AggregatedBlockData",
-    "type": "event"
   },
   {
     "anonymous": false,
@@ -57,23 +27,58 @@
       {
         "components": [
           {
+            "internalType": "address",
+            "name": "airnode",
+            "type": "address"
+          },
+          {
+            "internalType": "bytes32",
+            "name": "endpointId",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "address",
+            "name": "sponsor",
+            "type": "address"
+          },
+          {
+            "internalType": "address payable",
+            "name": "sponsorWallet",
+            "type": "address"
+          }
+        ],
+        "indexed": false,
+        "internalType": "struct SubAPI.Beacon",
+        "name": "beacon",
+        "type": "tuple"
+      }
+    ],
+    "name": "AddBeacon",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "components": [
+          {
             "internalType": "uint256",
-            "name": "blockNumber",
+            "name": "count",
             "type": "uint256"
           },
           {
             "internalType": "bytes32",
-            "name": "stateRoot",
+            "name": "root",
             "type": "bytes32"
           }
         ],
         "indexed": false,
-        "internalType": "struct AirnodeDataFeed.BlockData",
-        "name": "data",
+        "internalType": "struct SubAPIFeed.ORMPData",
+        "name": "ormpData",
         "type": "tuple"
       }
     ],
-    "name": "AirnodeDataFeedUpdated",
+    "name": "AggregatedORMPData",
     "type": "event"
   },
   {
@@ -159,6 +164,63 @@
     "type": "event"
   },
   {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "bytes32",
+        "name": "beaconId",
+        "type": "bytes32"
+      }
+    ],
+    "name": "RemoveBeacon",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "bytes32",
+        "name": "beaconId",
+        "type": "bytes32"
+      },
+      {
+        "components": [
+          {
+            "internalType": "uint256",
+            "name": "count",
+            "type": "uint256"
+          },
+          {
+            "internalType": "bytes32",
+            "name": "root",
+            "type": "bytes32"
+          }
+        ],
+        "indexed": false,
+        "internalType": "struct SubAPIFeed.ORMPData",
+        "name": "msgRoot",
+        "type": "tuple"
+      }
+    ],
+    "name": "SubAPIFeedUpdated",
+    "type": "event"
+  },
+  {
+    "inputs": [],
+    "name": "ORMP",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
     "inputs": [],
     "name": "acceptOwnership",
     "outputs": [],
@@ -190,7 +252,7 @@
             "type": "address"
           }
         ],
-        "internalType": "struct AirnodeDapi.Beacon",
+        "internalType": "struct SubAPI.Beacon",
         "name": "beacon",
         "type": "tuple"
       }
@@ -242,14 +304,31 @@
   {
     "inputs": [
       {
-        "internalType": "address",
-        "name": "airnode",
-        "type": "address"
-      },
-      {
-        "internalType": "bytes32",
-        "name": "endpointId",
-        "type": "bytes32"
+        "components": [
+          {
+            "internalType": "address",
+            "name": "airnode",
+            "type": "address"
+          },
+          {
+            "internalType": "bytes32",
+            "name": "endpointId",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "address",
+            "name": "sponsor",
+            "type": "address"
+          },
+          {
+            "internalType": "address payable",
+            "name": "sponsorWallet",
+            "type": "address"
+          }
+        ],
+        "internalType": "struct SubAPI.Beacon",
+        "name": "beacon",
+        "type": "tuple"
       }
     ],
     "name": "deriveBeaconId",
@@ -258,6 +337,54 @@
         "internalType": "bytes32",
         "name": "beaconId",
         "type": "bytes32"
+      }
+    ],
+    "stateMutability": "pure",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "components": [
+          {
+            "internalType": "uint256",
+            "name": "count",
+            "type": "uint256"
+          },
+          {
+            "internalType": "bytes32",
+            "name": "root",
+            "type": "bytes32"
+          }
+        ],
+        "internalType": "struct SubAPIFeed.ORMPData",
+        "name": "a",
+        "type": "tuple"
+      },
+      {
+        "components": [
+          {
+            "internalType": "uint256",
+            "name": "count",
+            "type": "uint256"
+          },
+          {
+            "internalType": "bytes32",
+            "name": "root",
+            "type": "bytes32"
+          }
+        ],
+        "internalType": "struct SubAPIFeed.ORMPData",
+        "name": "b",
+        "type": "tuple"
+      }
+    ],
+    "name": "eq",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
       }
     ],
     "stateMutability": "pure",
@@ -297,80 +424,17 @@
   {
     "inputs": [
       {
-        "internalType": "uint256",
-        "name": "index",
-        "type": "uint256"
-      }
-    ],
-    "name": "getBeaconAtIndex",
-    "outputs": [
-      {
-        "components": [
-          {
-            "internalType": "address",
-            "name": "airnode",
-            "type": "address"
-          },
-          {
-            "internalType": "bytes32",
-            "name": "endpointId",
-            "type": "bytes32"
-          },
-          {
-            "internalType": "address",
-            "name": "sponsor",
-            "type": "address"
-          },
-          {
-            "internalType": "address payable",
-            "name": "sponsorWallet",
-            "type": "address"
-          }
-        ],
-        "internalType": "struct AirnodeDapi.Beacon",
-        "name": "",
-        "type": "tuple"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
         "internalType": "bytes32",
-        "name": "beaconId",
+        "name": "requestId",
         "type": "bytes32"
       }
     ],
-    "name": "getBeaconById",
+    "name": "getBeaconIdByRequestId",
     "outputs": [
       {
-        "components": [
-          {
-            "internalType": "address",
-            "name": "airnode",
-            "type": "address"
-          },
-          {
-            "internalType": "bytes32",
-            "name": "endpointId",
-            "type": "bytes32"
-          },
-          {
-            "internalType": "address",
-            "name": "sponsor",
-            "type": "address"
-          },
-          {
-            "internalType": "address payable",
-            "name": "sponsorWallet",
-            "type": "address"
-          }
-        ],
-        "internalType": "struct AirnodeDapi.Beacon",
+        "internalType": "bytes32",
         "name": "",
-        "type": "tuple"
+        "type": "bytes32"
       }
     ],
     "stateMutability": "view",
@@ -387,45 +451,21 @@
     "name": "getDataFeedWithId",
     "outputs": [
       {
-        "internalType": "uint256",
-        "name": "blockNumber",
-        "type": "uint256"
-      },
-      {
-        "internalType": "bytes32",
-        "name": "stateRoot",
-        "type": "bytes32"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "bytes32[]",
-        "name": "beaconIds",
-        "type": "bytes32[]"
-      }
-    ],
-    "name": "getDatasFromBeacons",
-    "outputs": [
-      {
         "components": [
           {
             "internalType": "uint256",
-            "name": "blockNumber",
+            "name": "count",
             "type": "uint256"
           },
           {
             "internalType": "bytes32",
-            "name": "stateRoot",
+            "name": "root",
             "type": "bytes32"
           }
         ],
-        "internalType": "struct AirnodeDataFeed.BlockData[]",
-        "name": "",
-        "type": "tuple[]"
+        "internalType": "struct SubAPIFeed.ORMPData",
+        "name": "msgRoot",
+        "type": "tuple"
       }
     ],
     "stateMutability": "view",
@@ -457,6 +497,25 @@
         "type": "bytes32"
       }
     ],
+    "name": "getRequestIdByBeaconId",
+    "outputs": [
+      {
+        "internalType": "bytes32",
+        "name": "",
+        "type": "bytes32"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "beaconId",
+        "type": "bytes32"
+      }
+    ],
     "name": "isBeaconExist",
     "outputs": [
       {
@@ -470,20 +529,89 @@
   },
   {
     "inputs": [],
-    "name": "latestAnswer",
+    "name": "localCommitment",
     "outputs": [
       {
-        "internalType": "uint256",
-        "name": "block_number",
-        "type": "uint256"
-      },
+        "internalType": "bytes",
+        "name": "",
+        "type": "bytes"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "messageRoot",
+    "outputs": [
       {
         "internalType": "bytes32",
-        "name": "state_root",
+        "name": "",
         "type": "bytes32"
       }
     ],
     "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "name",
+    "outputs": [
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "components": [
+          {
+            "internalType": "uint256",
+            "name": "count",
+            "type": "uint256"
+          },
+          {
+            "internalType": "bytes32",
+            "name": "root",
+            "type": "bytes32"
+          }
+        ],
+        "internalType": "struct SubAPIFeed.ORMPData",
+        "name": "a",
+        "type": "tuple"
+      },
+      {
+        "components": [
+          {
+            "internalType": "uint256",
+            "name": "count",
+            "type": "uint256"
+          },
+          {
+            "internalType": "bytes32",
+            "name": "root",
+            "type": "bytes32"
+          }
+        ],
+        "internalType": "struct SubAPIFeed.ORMPData",
+        "name": "b",
+        "type": "tuple"
+      }
+    ],
+    "name": "neq",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "pure",
     "type": "function"
   },
   {
@@ -513,6 +641,24 @@
     "type": "function"
   },
   {
+    "inputs": [],
+    "name": "remoteCommitment",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "count",
+        "type": "uint256"
+      },
+      {
+        "internalType": "bytes32",
+        "name": "root",
+        "type": "bytes32"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
     "inputs": [
       {
         "internalType": "bytes32",
@@ -533,10 +679,51 @@
     "type": "function"
   },
   {
-    "inputs": [],
+    "inputs": [
+      {
+        "components": [
+          {
+            "internalType": "address",
+            "name": "airnode",
+            "type": "address"
+          },
+          {
+            "internalType": "bytes32",
+            "name": "endpointId",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "address",
+            "name": "sponsor",
+            "type": "address"
+          },
+          {
+            "internalType": "address payable",
+            "name": "sponsorWallet",
+            "type": "address"
+          }
+        ],
+        "internalType": "struct SubAPI.Beacon[]",
+        "name": "beacons",
+        "type": "tuple[]"
+      }
+    ],
     "name": "requestFinalizedHash",
     "outputs": [],
     "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_airnodeRrp",
+        "type": "address"
+      }
+    ],
+    "name": "setAirnodeRrp",
+    "outputs": [],
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
@@ -548,6 +735,19 @@
       }
     ],
     "name": "setFee",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "name_",
+        "type": "string"
+      }
+    ],
+    "name": "setName",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
