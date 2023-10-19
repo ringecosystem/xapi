@@ -37,19 +37,3 @@ body:
       placeholder: ex. 0x1234...
     validations:
       required: true
-  - type: input
-    id: sponsor-wallet
-    attributes:
-      label: Sponsor wallet address
-      description: Sponsor wallet address of your airnode
-      placeholder: ex. 0x1234...
-    validations:
-      required: false
-  - type: input
-    id: sponsor-address
-    attributes:
-      label: Sponsor address
-      description: Sponsor address
-      placeholder: ex. 0x1234...
-    validations:
-      required: false
