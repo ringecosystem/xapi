@@ -17,7 +17,8 @@ contract SubAPIFeed {
     mapping(bytes32 => ORMPData) internal _dataFeeds;
 
     function processBeaconUpdate(bytes32 beaconId, bytes calldata data) internal {
-        ORMPData memory ormpData = abi.decode(data, (ORMPData));
+        bytes memory decodeData = abi.decode(data, (bytes));
+        ORMPData memory ormpData = abi.decode(decodeData, (ORMPData));
         _dataFeeds[beaconId] = ormpData;
         emit SubAPIFeedUpdated(beaconId, ormpData);
     }

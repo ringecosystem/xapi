@@ -6,7 +6,7 @@ airnode=${1:?}
 sponsor=${2:?}
 sponsorWallet=${3:?}
 
-subapi=0x0027308D835B18646FA030280e37240DBD8d3219
+subapi=0x001F4321429B1E2DF774bdAe0fc62A7394652E0F
 
 arbitest_chain=arbitrum-sepolia
 arbitest_endpointId=0x23e5743c946604a779a5181a1bf621076cd11687a1f21c8bc2fa483bd704b3ab
