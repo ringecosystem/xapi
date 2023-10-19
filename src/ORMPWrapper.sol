@@ -14,9 +14,8 @@ contract ORMPWrapper {
         ORMP = ormp;
     }
 
-    function localCommitment() external view returns (bytes memory) {
-        uint256 count = IORMP(ORMP).messageCount();
-        bytes32 root = IORMP(ORMP).root();
-        return abi.encodePacked(count, root);
+    function localCommitment() external view returns (uint256 count, bytes32 root) {
+        count = IORMP(ORMP).messageCount();
+        root = IORMP(ORMP).root();
     }
 }
