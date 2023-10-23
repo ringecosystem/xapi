@@ -18,8 +18,8 @@ contract Deploy is Common {
     using ScriptTools for string;
 
     address immutable ORMP = 0x0034607daf9c1dc6628f6e09E81bB232B6603A89;
-    address immutable ADDR = 0x001F4321429B1E2DF774bdAe0fc62A7394652E0F;
-    bytes32 immutable SALT = 0x2e2404a5a574c47981f8bd7cd0ff49a8d695179f6ae7cb02889d3b2ddcbb90d2;
+    address immutable ADDR = 0x00945C032A37454333d7044a52a5A42Aa0f6c608;
+    bytes32 immutable SALT = 0x19203b2192e701e6d2310d9b28561240cfd7ed56dada781c033d5854f2159ae5;
 
     string config;
     string instanceId;
