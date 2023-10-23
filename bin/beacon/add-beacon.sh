@@ -9,7 +9,7 @@ sponsorWallet=${3:?}
 subapi=0x001F4321429B1E2DF774bdAe0fc62A7394652E0F
 
 arbitest_chain=arbitrum-sepolia
-arbitest_endpointId=0x23e5743c946604a779a5181a1bf621076cd11687a1f21c8bc2fa483bd704b3ab
+arbitest_endpointId=0xbd452be65dba2428924ea35129292b3247233952dae361d169f2d489d805ce23
 
 arbitest_data=$(set -x; ethabi encode params \
   -v "(address,bytes32,address,address)" \
@@ -20,7 +20,7 @@ arbitest_sig=$(cast sig "addBeacon((address,bytes32,address,address))")
 
 
 crab_chain=crab
-crab_endpointId=0xe7fe8a321e9c000326638d5187a650e3f9d0652f30a01ad9ae4a60327e6c5277
+crab_endpointId=0x63400292c39bafe31164968499615317be0f1b97b4122a29d436c8fb427fdf65```
 
 crab_data=$(set -x; ethabi encode params \
   -v "(address,bytes32,address,address)" \
