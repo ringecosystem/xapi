@@ -1,4 +1,4 @@
 @openzeppelin/contracts@4.9.2/=lib/zeppelin-solidity/contracts/
 ds-test/=lib/forge-std/lib/ds-test/src/
-ORMP/=lib/ORMP/
+create3-deploy/=lib/create3-deploy/
 forge-std/=lib/forge-std/src/
