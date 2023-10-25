@@ -1,1 +1,1 @@
-export SETH_CHAIN=arbitest
+export SETH_CHAIN=arbitrum-sepolia
