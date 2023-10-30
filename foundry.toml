@@ -7,7 +7,8 @@ solc_version = "0.8.17"
 evm_version = "london"
 optimizer = true
 optimizer_runs = 999999
-bytecode_hash = "none"
+bytecode_hash = "ipfs"
+extra_output_files = ["metadata"]
 
 fs_permissions = [
   { "access" = "read-write", "path" = "./script/output/"},
@@ -20,6 +21,8 @@ fs_permissions = [
 [rpc_endpoints]
 arbitrum-goerli = "https://goerli-rollup.arbitrum.io/rpc"
 arbitrum-sepolia = "https://sepolia-rollup.arbitrum.io/rpc"
+sepolia = "https://rpc.ankr.com/eth_sepolia"
+goerli = "https://rpc.ankr.com/eth_goerli"
 pangolin = "https://pangolin-rpc.darwinia.network"
 crab = "https://crab-rpc.darwinia.network"
 
