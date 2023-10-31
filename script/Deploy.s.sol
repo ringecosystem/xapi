@@ -11,6 +11,8 @@ import "../src/SubAPI.sol";
 
 interface III {
     function owner() external view returns (address);
+    function name() external view returns (string memory);
+    function airnodeRrp() external view returns (address);
     function transferOwnership(address newOwner) external;
     function pendingOwner() external view returns (address);
 }
@@ -28,6 +30,8 @@ contract Deploy is Common {
     string outputName;
     address deployer;
     address dao;
+    string subapiName;
+    address rrp;
 
     function name() public pure override returns (string memory) {
         return "Deploy";
@@ -42,6 +46,8 @@ contract Deploy is Common {
 
         deployer = config.readAddress(".DEPLOYER");
         dao = config.readAddress(".DAO");
+        subapiName = config.readString(".NAME");
+        rrp = config.readAddress(".AIRNODE_RRP");
     }
 
     function run() public {
@@ -56,11 +62,13 @@ contract Deploy is Common {
 
     function deploy() public broadcast returns (address) {
         bytes memory byteCode = type(SubAPI).creationCode;
-        bytes memory initCode = bytes.concat(byteCode, abi.encode(deployer, ORMP));
+        bytes memory initCode = bytes.concat(byteCode, abi.encode(deployer, rrp, ORMP, subapiName));
         address subapi = _deploy3(SALT, initCode);
         require(subapi == ADDR, "!addr");
 
-        require(III(subapi).owner() == deployer);
+        require(III(subapi).owner() == deployer, "!deployer");
+        require(III(subapi).airnodeRrp() == rrp, "!rrp");
+        require(eq(III(subapi).name(), subapiName), "!name");
         console.log("SubAPI deployed: %s", subapi);
         return subapi;
     }
@@ -69,5 +77,9 @@ contract Deploy is Common {
         III(ADDR).transferOwnership(dao);
         require(III(ADDR).pendingOwner() == dao, "!dao");
         // TODO:: dao.acceptOwnership()
+    }
+
+    function eq(string memory a, string memory b) internal pure returns (bool) {
+        return keccak256(abi.encodePacked(a)) == keccak256(abi.encodePacked(b));
     }
 }

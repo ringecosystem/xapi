@@ -41,8 +41,7 @@ contract Config is Common {
 
     function run() public {
         require(dao == msg.sender, "!dao");
-        setName();
-        setAirnodeRrp();
+        // setName();
         setFee();
     }
 
@@ -50,12 +49,6 @@ contract Config is Common {
         string memory name_ = config.readString(".name");
         III(subapi).setName(name_);
         require(eq(III(subapi).name(), name_), "!name");
-    }
-
-    function setAirnodeRrp() public broadcast {
-        address airnodeRrp = config.readAddress(".airnodeRrp");
-        III(subapi).setAirnodeRrp(airnodeRrp);
-        require(III(subapi).airnodeRrp() == airnodeRrp, "!airnodeRrp");
     }
 
     function setFee() public broadcast {
