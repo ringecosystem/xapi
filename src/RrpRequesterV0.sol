@@ -4,12 +4,11 @@
 
 pragma solidity 0.8.17;
 
-import "@openzeppelin/contracts@4.9.2/access/Ownable2Step.sol";
 import "./interfaces/IAirnodeRrpV0.sol";
 
 /// @title The contract to be inherited to make Airnode RRP requests
-contract RrpRequesterV0 is Ownable2Step {
-    IAirnodeRrpV0 public airnodeRrp;
+contract RrpRequesterV0 {
+    IAirnodeRrpV0 public immutable airnodeRrp;
 
     /// @dev Reverts if the caller is not the Airnode RRP contract.
     /// Use it as a modifier for fulfill and error callback methods, but also
@@ -24,7 +23,7 @@ contract RrpRequesterV0 is Ownable2Step {
     /// be sponsored by others and use these sponsorships while making
     /// requests, i.e., using this default sponsorship is optional.
     /// @param _airnodeRrp Airnode RRP contract address
-    function setAirnodeRrp(address _airnodeRrp) external onlyOwner {
+    constructor(address _airnodeRrp) {
         airnodeRrp = IAirnodeRrpV0(_airnodeRrp);
         IAirnodeRrpV0(_airnodeRrp).setSponsorshipStatus(address(this), true);
     }

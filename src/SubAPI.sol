@@ -3,6 +3,7 @@
 pragma solidity 0.8.17;
 
 import "@openzeppelin/contracts@4.9.2/utils/structs/EnumerableSet.sol";
+import "@openzeppelin/contracts@4.9.2/access/Ownable2Step.sol";
 import "./interfaces/IFeedOracle.sol";
 import "./RrpRequesterV0.sol";
 import "./ORMPWrapper.sol";
@@ -13,7 +14,7 @@ import "./SubAPIFeed.sol";
 /// dAPI security model is the same as edcsa pallet.
 /// @notice SubAPI serves data feeds in the form of BeaconSet.
 /// The BeaconSet are only updateable using RRPv0.
-contract SubAPI is IFeedOracle, RrpRequesterV0, SubAPIFeed, ORMPWrapper {
+contract SubAPI is IFeedOracle, RrpRequesterV0, SubAPIFeed, ORMPWrapper, Ownable2Step {
     using EnumerableSet for EnumerableSet.Bytes32Set;
 
     event AddBeacon(bytes32 indexed beaconId, Beacon beacon);
@@ -46,9 +47,12 @@ contract SubAPI is IFeedOracle, RrpRequesterV0, SubAPIFeed, ORMPWrapper {
     EnumerableSet.Bytes32Set private _beaconIds;
 
     /// @param dao SubAPIDao
+    /// @param rrp Airnode RRP contract address
     /// @param ormp ORMP RRP address
-    constructor(address dao, address ormp) ORMPWrapper(ormp) {
+    /// @param name_ SubAPI name
+    constructor(address dao, address rrp, address ormp, string memory name_) RrpRequesterV0(rrp) ORMPWrapper(ormp) {
         _transferOwnership(dao);
+        name = name_;
     }
 
     function setName(string memory name_) external onlyOwner {
