@@ -41,7 +41,7 @@ contract Config is Common {
 
     function run() public {
         require(dao == msg.sender, "!dao");
-        // setName();
+        setName();
         setFee();
     }
 

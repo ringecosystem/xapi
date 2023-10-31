@@ -21,16 +21,15 @@ contract Deploy is Common {
     using stdJson for string;
     using ScriptTools for string;
 
-    address immutable ORMP = 0x0034607daf9c1dc6628f6e09E81bB232B6603A89;
-    address immutable ADDR = 0x0011D025BEe8dA1461d9Ba382461B9DD48f11F1d;
-    bytes32 immutable SALT = 0xfa3a7fa313f408af8f6ec8461944703c8062977f27e4789d8814e26dc7df220a;
+    address immutable ORMP = 0x009D223Aad560e72282db9c0438Ef1ef2bf7703D;
+    address immutable ADDR = 0x00d917EC19A6b8837ADFcF8adE3D6faF62e0F587;
+    bytes32 immutable SALT = 0xe7849c948ea6e6b8c405d9ca604fc1ab01c9a05c7f7bb268a419e707e2f1d936;
 
     string config;
     string instanceId;
     string outputName;
     address deployer;
     address dao;
-    string subapiName;
     address rrp;
 
     function name() public pure override returns (string memory) {
@@ -46,7 +45,6 @@ contract Deploy is Common {
 
         deployer = config.readAddress(".DEPLOYER");
         dao = config.readAddress(".DAO");
-        subapiName = config.readString(".NAME");
         rrp = config.readAddress(".AIRNODE_RRP");
     }
 
@@ -62,13 +60,12 @@ contract Deploy is Common {
 
     function deploy() public broadcast returns (address) {
         bytes memory byteCode = type(SubAPI).creationCode;
-        bytes memory initCode = bytes.concat(byteCode, abi.encode(deployer, rrp, ORMP, subapiName));
+        bytes memory initCode = bytes.concat(byteCode, abi.encode(deployer, rrp, ORMP));
         address subapi = _deploy3(SALT, initCode);
         require(subapi == ADDR, "!addr");
 
         require(III(subapi).owner() == deployer, "!deployer");
         require(III(subapi).airnodeRrp() == rrp, "!rrp");
-        require(eq(III(subapi).name(), subapiName), "!name");
         console.log("SubAPI deployed: %s", subapi);
         return subapi;
     }
@@ -77,9 +74,5 @@ contract Deploy is Common {
         III(ADDR).transferOwnership(dao);
         require(III(ADDR).pendingOwner() == dao, "!dao");
         // TODO:: dao.acceptOwnership()
-    }
-
-    function eq(string memory a, string memory b) internal pure returns (bool) {
-        return keccak256(abi.encodePacked(a)) == keccak256(abi.encodePacked(b));
     }
 }

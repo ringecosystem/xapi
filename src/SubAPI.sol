@@ -49,10 +49,8 @@ contract SubAPI is IFeedOracle, RrpRequesterV0, SubAPIFeed, ORMPWrapper, Ownable
     /// @param dao SubAPIDao
     /// @param rrp Airnode RRP contract address
     /// @param ormp ORMP RRP address
-    /// @param name_ SubAPI name
-    constructor(address dao, address rrp, address ormp, string memory name_) RrpRequesterV0(rrp) ORMPWrapper(ormp) {
+    constructor(address dao, address rrp, address ormp) RrpRequesterV0(rrp) ORMPWrapper(ormp) {
         _transferOwnership(dao);
-        name = name_;
     }
 
     function setName(string memory name_) external onlyOwner {
