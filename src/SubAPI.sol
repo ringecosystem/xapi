@@ -17,6 +17,7 @@ import "./SubAPIFeed.sol";
 contract SubAPI is IFeedOracle, RrpRequesterV0, SubAPIFeed, ORMPWrapper, Ownable2Step {
     using EnumerableSet for EnumerableSet.Bytes32Set;
 
+    event SetFee(uint256 indexed fee);
     event AddBeacon(bytes32 indexed beaconId, Beacon beacon);
     event RemoveBeacon(bytes32 indexed beaconId);
     event AirnodeRrpRequested(bytes32 indexed beaconId, bytes32 indexed requestId);
@@ -73,6 +74,7 @@ contract SubAPI is IFeedOracle, RrpRequesterV0, SubAPIFeed, ORMPWrapper, Ownable
     /// @notice change the beacon fee
     function setFee(uint256 fee_) external onlyOwner {
         fee = fee_;
+        emit SetFee(fee_);
     }
 
     function remoteCommitment() external view returns (uint256 count, bytes32 root) {
