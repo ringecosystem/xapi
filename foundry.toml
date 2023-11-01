@@ -8,6 +8,7 @@ evm_version = "london"
 optimizer = true
 optimizer_runs = 999999
 bytecode_hash = "ipfs"
+cbor_metadata = true
 extra_output_files = ["metadata"]
 
 fs_permissions = [
