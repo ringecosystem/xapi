@@ -5,6 +5,7 @@ set -eo pipefail
 deployer=0x0f14341A7f464320319025540E8Fe48Ad0fe5aec
 ormp=0x009D223Aad560e72282db9c0438Ef1ef2bf7703D
 subapi=0x00d917EC19A6b8837ADFcF8adE3D6faF62e0F587
+rrp=0xa0AD79D995DdeeB18a14eAef56A549A04e3Aa1Bd
 
 verify() {
   local addr; addr=$1
@@ -24,5 +25,5 @@ verify() {
     $path > script/output/$chain_id/$name.v.json)
 }
 
-verify $subapi 421614 $(cast abi-encode "constructor(address,address)" $deployer $ormp) src/SubAPI.sol:SubAPI
-verify $subapi 44     $(cast abi-encode "constructor(address,address)" $deployer $ormp) src/SubAPI.sol:SubAPI
+verify $subapi 421614 $(cast abi-encode "constructor(address,address,address)" $deployer $rrp $ormp) src/SubAPI.sol:SubAPI
+verify $subapi 44     $(cast abi-encode "constructor(address,address,address)" $deployer $rrp $ormp) src/SubAPI.sol:SubAPI
