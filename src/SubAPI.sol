@@ -157,7 +157,7 @@ contract SubAPI is IFeedOracle, RrpRequesterV0, SubAPIFeed, ORMPWrapper, Ownable
         if (_beaconIdToRequestId[beaconId] == requestId) {
             delete _requestIdToBeaconId[requestId];
             delete _beaconIdToRequestId[beaconId];
-            processBeaconUpdate(beaconId, data);
+            _processBeaconUpdate(beaconId, data);
             emit AirnodeRrpCompleted(beaconId, requestId, data);
         } else {
             delete _requestIdToBeaconId[requestId];
