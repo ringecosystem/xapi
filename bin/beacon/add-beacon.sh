@@ -8,7 +8,7 @@ sponsorWallet=${3:?}
 
 c3=$PWD/script/input/c3.json
 
-subapi=$(jq -r "SUBAPI_ADDR" $c3)
+subapi=$(jq -r ".SUBAPI_ADDR" $c3)
 
 arbitest_chain=arbitrum-sepolia
 arbitest_endpointId=0xbd452be65dba2428924ea35129292b3247233952dae361d169f2d489d805ce23
