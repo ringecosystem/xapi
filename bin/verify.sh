@@ -2,10 +2,12 @@
 
 set -eo pipefail
 
-deployer=0x0f14341A7f464320319025540E8Fe48Ad0fe5aec
-ormp=0x009D223Aad560e72282db9c0438Ef1ef2bf7703D
-subapi=0x00d917EC19A6b8837ADFcF8adE3D6faF62e0F587
-rrp=0xa0AD79D995DdeeB18a14eAef56A549A04e3Aa1Bd
+c3=$PWD/script/input/c3.json
+
+deployer=$(jq -r ".DEPLOYER" $c3)
+ormp=$(jq -r ".ORMP_ADDR" $c3)
+subapi=$(jq -r ".SUBAPI_ADDR" $c3)
+rrp=$(jq -r ".RRP_ADDR" $c3)
 
 verify() {
   local addr; addr=$1

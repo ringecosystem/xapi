@@ -6,7 +6,9 @@ airnode=${1:?}
 sponsor=${2:?}
 sponsorWallet=${3:?}
 
-subapi=0x00d917EC19A6b8837ADFcF8adE3D6faF62e0F587
+c3=$PWD/script/input/c3.json
+
+subapi=$(jq -r "SUBAPI_ADDR" $c3)
 
 arbitest_chain=arbitrum-sepolia
 arbitest_endpointId=0xbd452be65dba2428924ea35129292b3247233952dae361d169f2d489d805ce23

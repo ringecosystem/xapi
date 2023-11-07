@@ -21,10 +21,11 @@ contract Deploy is Common {
     using stdJson for string;
     using ScriptTools for string;
 
-    address immutable ORMP = 0x009D223Aad560e72282db9c0438Ef1ef2bf7703D;
-    address immutable ADDR = 0x00d917EC19A6b8837ADFcF8adE3D6faF62e0F587;
-    bytes32 immutable SALT = 0xe7849c948ea6e6b8c405d9ca604fc1ab01c9a05c7f7bb268a419e707e2f1d936;
+    address ORMP;
+    address ADDR;
+    bytes32 SALT;
 
+    string c3;
     string config;
     string instanceId;
     string outputName;
@@ -42,6 +43,10 @@ contract Deploy is Common {
         instanceId = vm.envOr("INSTANCE_ID", string("deploy.c"));
         outputName = "deploy.a";
         config = ScriptTools.readInput(instanceId);
+        c3 = ScriptTools.readInput("../c3");
+        ORMP = c3.readAddress(".ORMP_ADDR");
+        ADDR = c3.readAddress(".SUBAPI_ADDR");
+        SALT = c3.readBytes32(".SUBAPI_SALT");
 
         deployer = config.readAddress(".DEPLOYER");
         dao = config.readAddress(".DAO");
