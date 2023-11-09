@@ -36,6 +36,8 @@
 
 ## Arinode Operators
 
+<https://github.com/subapidao/subapi/issues?q=is%3Aissue+is%3Aclosed+label%3Aapplication>
+
 ### Testnet sponsor wallets
 
 Sponsor Address: `0x9F33a4809aA708d7a399fedBa514e0A0d15EfA85`
