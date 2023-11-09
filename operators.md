@@ -39,6 +39,7 @@
 ### Testnet sponsor wallets
 
 Sponsor Address: `0x9F33a4809aA708d7a399fedBa514e0A0d15EfA85`
+
 SubAPI: `0x00000000007317c91F57D86A410934A490E62E1E`
 
 | Operator | Sponsor wallet | Airnode xpub |
@@ -52,6 +53,7 @@ SubAPI: `0x00000000007317c91F57D86A410934A490E62E1E`
 ### Mainnet sponsor wallets
 
 Sponsor Address: `0x9F33a4809aA708d7a399fedBa514e0A0d15EfA85`
+
 SubAPI: `0x00000000007317c91F57D86A410934A490E62E1E`
 
 | Operator | Sponsor wallet | Airnode xpub |
