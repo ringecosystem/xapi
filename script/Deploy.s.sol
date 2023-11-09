@@ -57,7 +57,7 @@ contract Deploy is Common {
         require(deployer == msg.sender, "!deployer");
 
         deploy();
-        setConfig();
+        // setConfig();
 
         ScriptTools.exportContract(outputName, "DAO", dao);
         ScriptTools.exportContract(outputName, "SUBAPI", ADDR);
