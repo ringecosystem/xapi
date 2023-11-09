@@ -2,15 +2,15 @@
 
 ## RRP address
 
-<https://github.com/subapidao/airnode-config/blob/main/Endpoints.md#rrp-address>
+[AirnodeRRPV0](https://github.com/subapidao/airnode-config/blob/main/Endpoints.md#rrp-address)
 
 ## Airnode Endpoints
 
-<https://github.com/subapidao/airnode-config/blob/main/Endpoints.md#messageroot>
+[MessageRoot](https://github.com/subapidao/airnode-config/blob/main/Endpoints.md#messageroot)
 
 ## Arinode Operators
 
-<https://github.com/subapidao/subapi/issues?q=is%3Aissue+is%3Aclosed+label%3Aapplication>
+[Application issues](https://github.com/subapidao/subapi/issues?q=is%3Aissue+is%3Aclosed+label%3Aapplication)
 
 ### Testnet sponsor wallets
 
