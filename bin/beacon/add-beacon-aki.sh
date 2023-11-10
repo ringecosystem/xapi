@@ -3,7 +3,7 @@
 set -eo pipefail
 
 airnode=0xbaA142d0464031990725F0ABfA9dA0e24298650e
-sponsor=0x9F33a4809aA708d7a399fedBa514e0A0d15EfA85
-sponsorWallet=0x534516FA00D43B8799a9cd29E7E48283f029FA23
+sponsor=0x000000000a0D8ac9cc6CbD817fA77090322FF29d
+sponsorWallet=0xF17fe0E7230835A74b49c4cae20759F7fAb40f31
 
 . $(dirname $0)/add-beacon.sh $airnode $sponsor $sponsorWallet

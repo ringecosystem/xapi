@@ -10,23 +10,22 @@ c3=$PWD/script/input/c3.json
 
 subapi=$(jq -r ".SUBAPI_ADDR" $c3)
 
-arbitest_chain=arbitrum-sepolia
-arbitest_endpointId=0xbd452be65dba2428924ea35129292b3247233952dae361d169f2d489d805ce23
+chain=arbitrum
+endpointId=0x45189e2288f2d2e384c9e3be7c3c6cef65a553341ca8580e1ed3516725112bb4
 
-arbitest_data=$(set -x; ethabi encode params \
+data=$(set -x; ethabi encode params \
   -v "(address,bytes32,address,address)" \
-  "(${airnode:2},${arbitest_endpointId:2},${sponsor:2},${sponsorWallet:2})")
+  "(${airnode:2},${endpointId:2},${sponsor:2},${sponsorWallet:2})")
 
-arbitest_sig=$(cast sig "addBeacon((address,bytes32,address,address))")
-(set -x; seth send $subapi $arbitest_sig$arbitest_data --chain $arbitest_chain)
+sig=$(cast sig "addBeacon((address,bytes32,address,address))")
+(set -x; seth send $subapi $sig$data --chain $chain)
 
 
-crab_chain=crab
-crab_endpointId=0x63400292c39bafe31164968499615317be0f1b97b4122a29d436c8fb427fdf65
+chain=darwinia
+endpointId=0x18905d41e909c79069d74843dc474d0809df62b5bc555ea272b0cc49ff3fa924
 
-crab_data=$(set -x; ethabi encode params \
+data=$(set -x; ethabi encode params \
   -v "(address,bytes32,address,address)" \
-  "(${airnode:2},${crab_endpointId:2},${sponsor:2},${sponsorWallet:2})")
+  "(${airnode:2},${endpointId:2},${sponsor:2},${sponsorWallet:2})")
 
-crab_sig=$(cast sig "addBeacon((address,bytes32,address,address))")
-(set -x; seth send $subapi $crab_sig$crab_data --chain $crab_chain)
+(set -x; seth send $subapi $sig$data --chain $chain)
