@@ -1,18 +1,10 @@
 name: Airnode Application
-description: Request to Join dAPI
+description: Request to Join subAPI
 title: "[Application]: <title>"
 labels: ["application"]
 assignees:
   - hujw77
 body:
-  - type: textarea
-    id: endpoints
-    attributes:
-      label: Endpoints & gateway & params
-      description: Tell us what services your airnode can provide, you can get these from your airnode config
-      placeholder: Fill in your endpointId, http gateway for testing, and required parameters
-    validations:
-      required: true
   - type: input
     id: airnode-xpub
     attributes:
