@@ -27,5 +27,4 @@ verify() {
     $path > script/output/$chain_id/$name.v.json)
 }
 
-verify $subapi 42161 $(cast abi-encode "constructor(address,address,address)" $deployer $rrp $ormp) src/SubAPI.sol:SubAPI
-verify $subapi 46    $(cast abi-encode "constructor(address,address,address)" $deployer $rrp $ormp) src/SubAPI.sol:SubAPI
+verify $subapi 11155111 $(cast abi-encode "constructor(address,address,address)" $deployer $rrp $ormp) src/SubAPI.sol:SubAPI
