@@ -25,6 +25,7 @@ contract SubAPI is IFeedOracle, RrpRequesterV0, SubAPIFeed, ORMPWrapper, Ownable
     event AggregatedORMPData(ORMPData ormpData);
 
     /// @notice Beacon metadata
+    /// @dev beaconId must be different on multi chain
     /// @param airnode Airnode address
     /// @param endpointId Endpoint ID
     /// @param sponsor Sponsor address
