@@ -17,35 +17,35 @@ import "./SubAPIFeed.sol";
 contract SubAPI is IFeedOracle, RrpRequesterV0, SubAPIFeed, ORMPWrapper, Ownable2Step {
     using EnumerableSet for EnumerableSet.Bytes32Set;
 
-    event SetFee(uint256 indexed chainid, uint256 indexed fee);
-    event AddBeacon(uint256 indexed chainid, bytes32 indexed beaconId, Beacon beacon);
-    event RemoveBeacon(uint256 indexed chainid, bytes32 indexed beaconId);
-    event AirnodeRrpRequested(uint256 indexed chainid, bytes32 indexed beaconId, bytes32 indexed requestId);
+    event SetFee(uint256 indexed chainId, uint256 indexed fee);
+    event AddBeacon(uint256 indexed chainId, bytes32 indexed beaconId, Beacon beacon);
+    event RemoveBeacon(uint256 indexed chainId, bytes32 indexed beaconId);
+    event AirnodeRrpRequested(uint256 indexed chainId, bytes32 indexed beaconId, bytes32 indexed requestId);
     event AirnodeRrpCompleted(bytes32 indexed beaconId, bytes32 indexed requestId, bytes data);
     event AggregatedORMPData(ORMPData ormpData);
 
     /// @notice Beacon metadata
     /// @dev beaconId must be different on multi chain
-    /// @param chainid Chain ID
+    /// @param chainId Chain ID
     /// @param airnode Airnode address
     /// @param endpointId Endpoint ID
     /// @param sponsor Sponsor address
     /// @param sponsorWallet Sponsor wallet address
     struct Beacon {
-        uint256 chainid;
+        uint256 chainId;
         address airnode;
         bytes32 endpointId;
         address sponsor;
         address payable sponsorWallet;
     }
 
-    // chainid => fee
+    // chainId => fee
     mapping(uint256 => uint256) public feeOf;
     // requestId => beaconId
     mapping(bytes32 => bytes32) private _requestIdToBeaconId;
     // beaconId => requestId
     mapping(bytes32 => bytes32) private _beaconIdToRequestId;
-    // chainid => beaconIdSet
+    // chainId => beaconIdSet
     mapping(uint256 => EnumerableSet.Bytes32Set) private _beaconIds;
 
     /// @param dao SubAPIDao
@@ -56,40 +56,40 @@ contract SubAPI is IFeedOracle, RrpRequesterV0, SubAPIFeed, ORMPWrapper, Ownable
     }
 
     /// @notice Add a beacon to BeaconSet
-    function addBeacon(uint256 chainid, Beacon calldata beacon) external onlyOwner {
+    function addBeacon(uint256 chainId, Beacon calldata beacon) external onlyOwner {
         bytes32 beaconId = deriveBeaconId(beacon);
-        require(chainid == beacon.chainid, "!chainid");
-        require(_beaconIds[chainid].add(beaconId), "!add");
-        emit AddBeacon(chainid, beaconId, beacon);
+        require(chainId == beacon.chainId, "!chainId");
+        require(_beaconIds[chainId].add(beaconId), "!add");
+        emit AddBeacon(chainId, beaconId, beacon);
     }
 
     /// @notice Remove the beacon from BeaconSet
-    function removeBeacon(uint256 chainid, bytes32 beaconId) external onlyOwner {
-        require(_beaconIds[chainid].remove(beaconId), "!rm");
-        emit RemoveBeacon(chainid, beaconId);
+    function removeBeacon(uint256 chainId, bytes32 beaconId) external onlyOwner {
+        require(_beaconIds[chainId].remove(beaconId), "!rm");
+        emit RemoveBeacon(chainId, beaconId);
     }
 
     /// @notice change the beacon fee
-    function setFee(uint256 chainid, uint256 fee_) external onlyOwner {
-        feeOf[chainid] = fee_;
-        emit SetFee(chainid, fee_);
+    function setFee(uint256 chainId, uint256 fee_) external onlyOwner {
+        feeOf[chainId] = fee_;
+        emit SetFee(chainId, fee_);
     }
 
-    function remoteCommitmentOf(uint256 chainid) external view returns (uint256 count, bytes32 root) {
-        ORMPData memory data = _aggregatedDataOf[chainid];
+    function remoteCommitmentOf(uint256 chainId) external view returns (uint256 count, bytes32 root) {
+        ORMPData memory data = _aggregatedDataOf[chainId];
         count = data.count;
         root = data.root;
     }
 
-    function messageRootOf(uint256 chainid) external view returns (bytes32) {
-        return _aggregatedDataOf[chainid].root;
+    function messageRootOf(uint256 chainId) external view returns (bytes32) {
+        return _aggregatedDataOf[chainId].root;
     }
 
     /// @notice Fetch request fee
     /// return tokenAddress if tokenAddress is Address(0x0), pay the native token
     ///        fee the request fee
-    function getRequestFeeOf(uint256 chainid) external view returns (address, uint256) {
-        return (address(0), feeOf[chainid] * beaconsLengthOf(chainid));
+    function getRequestFeeOf(uint256 chainId) external view returns (address, uint256) {
+        return (address(0), feeOf[chainId] * beaconsLengthOf(chainId));
     }
 
     /// @notice Fetch beaconId by requestId
@@ -103,13 +103,13 @@ contract SubAPI is IFeedOracle, RrpRequesterV0, SubAPIFeed, ORMPWrapper, Ownable
     }
 
     /// @notice BeaconSet length
-    function beaconsLengthOf(uint256 chainid) public view returns (uint256) {
-        return _beaconIds[chainid].length();
+    function beaconsLengthOf(uint256 chainId) public view returns (uint256) {
+        return _beaconIds[chainId].length();
     }
 
     /// @notice Check if the beacon exist by Id
-    function isBeaconExist(uint256 chainid, bytes32 beaconId) public view returns (bool) {
-        return _beaconIds[chainid].contains(beaconId);
+    function isBeaconExist(uint256 chainId, bytes32 beaconId) public view returns (bool) {
+        return _beaconIds[chainId].contains(beaconId);
     }
 
     /// @notice Derives the Beacon ID from the Airnode address and endpoint ID
@@ -119,8 +119,8 @@ contract SubAPI is IFeedOracle, RrpRequesterV0, SubAPIFeed, ORMPWrapper, Ownable
     }
 
     function _request(Beacon calldata beacon, bytes32 beaconId) internal {
-        uint256 chainid = beacon.chainid;
-        beacon.sponsorWallet.transfer(feeOf[chainid]);
+        uint256 chainId = beacon.chainId;
+        beacon.sponsorWallet.transfer(feeOf[chainId]);
         bytes32 requestId = airnodeRrp.makeFullRequest(
             beacon.airnode,
             beacon.endpointId,
@@ -132,19 +132,19 @@ contract SubAPI is IFeedOracle, RrpRequesterV0, SubAPIFeed, ORMPWrapper, Ownable
         );
         _requestIdToBeaconId[requestId] = beaconId;
         _beaconIdToRequestId[beaconId] = requestId;
-        emit AirnodeRrpRequested(chainid, beaconId, requestId);
+        emit AirnodeRrpRequested(chainId, beaconId, requestId);
     }
 
     /// @notice Create a request for arbitrum finalized header
     ///         Send reqeust to all beacon in BeaconSet
-    function requestFinalizedHash(uint256 chainid, Beacon[] calldata beacons) external payable {
+    function requestFinalizedHash(uint256 chainId, Beacon[] calldata beacons) external payable {
         uint256 beaconCount = beacons.length;
-        require(beaconCount == beaconsLengthOf(chainid), "!all");
-        require(msg.value == feeOf[chainid] * beaconCount, "!fee");
+        require(beaconCount == beaconsLengthOf(chainId), "!all");
+        require(msg.value == feeOf[chainId] * beaconCount, "!fee");
         for (uint256 i = 0; i < beaconCount; i++) {
             bytes32 beaconId = deriveBeaconId(beacons[i]);
-            require(isBeaconExist(chainid, beaconId), "!exist");
-            require(chainid == beacons[i].chainid, "!chainid");
+            require(isBeaconExist(chainId, beaconId), "!exist");
+            require(chainId == beacons[i].chainId, "!chainId");
             _request(beacons[i], beaconId);
         }
     }
@@ -168,21 +168,21 @@ contract SubAPI is IFeedOracle, RrpRequesterV0, SubAPIFeed, ORMPWrapper, Ownable
     /// @notice Called to aggregate the BeaconSet and save the result.
     ///         beaconIds should be a supermajor(>2/3) subset of all beacons in contract.
     /// @param beaconIds Beacon IDs should be sorted in ascending order
-    function aggregateBeacons(uint256 chainid, bytes32[] calldata beaconIds) external {
+    function aggregateBeacons(uint256 chainId, bytes32[] calldata beaconIds) external {
         uint256 beaconCount = beaconIds.length;
-        bytes32[] memory allBeaconIds = _beaconIds[chainid].values();
+        bytes32[] memory allBeaconIds = _beaconIds[chainId].values();
         require(beaconCount * 3 > allBeaconIds.length * 2, "!supermajor");
-        ORMPData[] memory datas = _checkAndGetDatasFromBeacons(chainid, beaconIds);
+        ORMPData[] memory datas = _checkAndGetDatasFromBeacons(chainId, beaconIds);
         ORMPData memory data = datas[0];
         for (uint256 i = 1; i < beaconCount; i++) {
             require(eq(data, datas[i]), "!agg");
         }
-        require(neq(_aggregatedDataOf[chainid], data), "same");
-        _aggregatedDataOf[chainid] = data;
+        require(neq(_aggregatedDataOf[chainId], data), "same");
+        _aggregatedDataOf[chainId] = data;
         emit AggregatedORMPData(data);
     }
 
-    function _checkAndGetDatasFromBeacons(uint256 chainid, bytes32[] calldata beaconIds)
+    function _checkAndGetDatasFromBeacons(uint256 chainId, bytes32[] calldata beaconIds)
         internal
         view
         returns (ORMPData[] memory)
@@ -193,7 +193,7 @@ contract SubAPI is IFeedOracle, RrpRequesterV0, SubAPIFeed, ORMPWrapper, Ownable
         bytes32 current;
         for (uint256 i = 0; i < beaconCount; i++) {
             current = beaconIds[i];
-            require(current > last && isBeaconExist(chainid, current), "!beacon");
+            require(current > last && isBeaconExist(chainId, current), "!beacon");
             datas[i] = _dataFeeds[current];
             last = current;
         }
