@@ -17,7 +17,7 @@ import "./SubAPIFeed.sol";
 contract SubAPI is IFeedOracle, RrpRequesterV0, SubAPIFeed, ORMPWrapper, Ownable2Step {
     using EnumerableSet for EnumerableSet.Bytes32Set;
 
-    event SetFee(uint256 indexed chainId, uint256 indexed fee);
+    event SetFee(uint256 indexed fee);
     event AddBeacon(uint256 indexed chainId, bytes32 indexed beaconId, Beacon beacon);
     event RemoveBeacon(uint256 indexed chainId, bytes32 indexed beaconId);
     event AirnodeRrpRequested(uint256 indexed chainId, bytes32 indexed beaconId, bytes32 indexed requestId);
@@ -39,8 +39,7 @@ contract SubAPI is IFeedOracle, RrpRequesterV0, SubAPIFeed, ORMPWrapper, Ownable
         address payable sponsorWallet;
     }
 
-    // chainId => fee
-    mapping(uint256 => uint256) public feeOf;
+    uint256 public fee;
     // requestId => beaconId
     mapping(bytes32 => bytes32) private _requestIdToBeaconId;
     // beaconId => requestId
@@ -70,9 +69,9 @@ contract SubAPI is IFeedOracle, RrpRequesterV0, SubAPIFeed, ORMPWrapper, Ownable
     }
 
     /// @notice change the beacon fee
-    function setFee(uint256 chainId, uint256 fee_) external onlyOwner {
-        feeOf[chainId] = fee_;
-        emit SetFee(chainId, fee_);
+    function setFee(uint256 fee_) external onlyOwner {
+        fee = fee_;
+        emit SetFee(fee_);
     }
 
     function remoteCommitmentOf(uint256 chainId) external view returns (uint256 count, bytes32 root) {
@@ -89,7 +88,7 @@ contract SubAPI is IFeedOracle, RrpRequesterV0, SubAPIFeed, ORMPWrapper, Ownable
     /// return tokenAddress if tokenAddress is Address(0x0), pay the native token
     ///        fee the request fee
     function getRequestFeeOf(uint256 chainId) external view returns (address, uint256) {
-        return (address(0), feeOf[chainId] * beaconsLengthOf(chainId));
+        return (address(0), fee * beaconsLengthOf(chainId));
     }
 
     /// @notice Fetch beaconId by requestId
@@ -120,7 +119,7 @@ contract SubAPI is IFeedOracle, RrpRequesterV0, SubAPIFeed, ORMPWrapper, Ownable
 
     function _request(Beacon calldata beacon, bytes32 beaconId) internal {
         uint256 chainId = beacon.chainId;
-        beacon.sponsorWallet.transfer(feeOf[chainId]);
+        beacon.sponsorWallet.transfer(fee);
         bytes32 requestId = airnodeRrp.makeFullRequest(
             beacon.airnode,
             beacon.endpointId,
@@ -140,7 +139,7 @@ contract SubAPI is IFeedOracle, RrpRequesterV0, SubAPIFeed, ORMPWrapper, Ownable
     function requestFinalizedHash(uint256 chainId, Beacon[] calldata beacons) external payable {
         uint256 beaconCount = beacons.length;
         require(beaconCount == beaconsLengthOf(chainId), "!all");
-        require(msg.value == feeOf[chainId] * beaconCount, "!fee");
+        require(msg.value == fee * beaconCount, "!fee");
         for (uint256 i = 0; i < beaconCount; i++) {
             bytes32 beaconId = deriveBeaconId(beacons[i]);
             require(isBeaconExist(chainId, beaconId), "!exist");
