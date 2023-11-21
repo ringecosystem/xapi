@@ -12,7 +12,8 @@ contract SubAPIFeed {
         bytes32 root;
     }
 
-    ORMPData internal _aggregatedData;
+    // chainId => ORMPData
+    mapping(uint256 => ORMPData) internal _aggregatedDataOf;
     // beaconId => ORMPData
     mapping(bytes32 => ORMPData) internal _dataFeeds;
 

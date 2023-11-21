@@ -12,7 +12,7 @@
 
 Sponsor Address: 0x9F33a4809aA708d7a399fedBa514e0A0d15EfA85
 
-SubAPI: 0x00000000007317c91F57D86A410934A490E62E1E
+SubAPI: 0x00000000096c285629Fe3EAb3dd042c27b9dcBa6
 
 | Operator | Sponsor wallet | Airnode address | Airnode xpub |
 | ------------ | ------------------- | ------------------ |-------------------------------------------- |
@@ -26,7 +26,7 @@ SubAPI: 0x00000000007317c91F57D86A410934A490E62E1E
 
 Sponsor Address: 0x000000000a0D8ac9cc6CbD817fA77090322FF29d
 
-SubAPI: 0x00000000007317c91F57D86A410934A490E62E1E
+SubAPI: 0x00000000096c285629Fe3EAb3dd042c27b9dcBa6
 
 | Operator | Sponsor wallet | Airnode address | Airnode xpub |
 | ------------ | ------------------- | ------------------ |-------------------------------------------- |
