@@ -8,7 +8,6 @@ import {ScriptTools} from "create3-deploy/script/ScriptTools.sol";
 
 interface III {
     function fee() external view returns (uint256);
-    function name() external view returns (string memory);
     function airnodeRrp() external view returns (address);
     function setFee(uint256 fee_) external;
     function setName(string memory name_) external;
@@ -41,14 +40,7 @@ contract Config is Common {
 
     function run() public {
         require(dao == msg.sender, "!dao");
-        setName();
         setFee();
-    }
-
-    function setName() public broadcast {
-        string memory name_ = config.readString(".name");
-        III(subapi).setName(name_);
-        require(eq(III(subapi).name(), name_), "!name");
     }
 
     function setFee() public broadcast {
