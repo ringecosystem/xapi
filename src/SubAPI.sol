@@ -22,7 +22,7 @@ contract SubAPI is IFeedOracle, RrpRequesterV0, SubAPIFeed, ORMPWrapper, Ownable
     event RemoveBeacon(uint256 indexed chainId, bytes32 indexed beaconId);
     event AirnodeRrpRequested(uint256 indexed chainId, bytes32 indexed beaconId, bytes32 indexed requestId);
     event AirnodeRrpCompleted(bytes32 indexed beaconId, bytes32 indexed requestId, bytes data);
-    event AggregatedORMPData(ORMPData ormpData);
+    event AggregatedORMPData(uint256 indexed chainId, ORMPData ormpData);
 
     /// @notice Beacon metadata
     /// @dev beaconId must be different on multi chain
@@ -178,7 +178,7 @@ contract SubAPI is IFeedOracle, RrpRequesterV0, SubAPIFeed, ORMPWrapper, Ownable
         }
         require(neq(_aggregatedDataOf[chainId], data), "same");
         _aggregatedDataOf[chainId] = data;
-        emit AggregatedORMPData(data);
+        emit AggregatedORMPData(chainId, data);
     }
 
     function _checkAndGetDatasFromBeacons(uint256 chainId, bytes32[] calldata beaconIds)
