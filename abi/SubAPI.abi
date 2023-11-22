@@ -8,6 +8,11 @@
       },
       {
         "internalType": "address",
+        "name": "rrp",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
         "name": "ormp",
         "type": "address"
       }
@@ -20,12 +25,23 @@
     "inputs": [
       {
         "indexed": true,
+        "internalType": "uint256",
+        "name": "chainId",
+        "type": "uint256"
+      },
+      {
+        "indexed": true,
         "internalType": "bytes32",
         "name": "beaconId",
         "type": "bytes32"
       },
       {
         "components": [
+          {
+            "internalType": "uint256",
+            "name": "chainId",
+            "type": "uint256"
+          },
           {
             "internalType": "address",
             "name": "airnode",
@@ -59,6 +75,12 @@
   {
     "anonymous": false,
     "inputs": [
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "chainId",
+        "type": "uint256"
+      },
       {
         "components": [
           {
@@ -109,6 +131,12 @@
   {
     "anonymous": false,
     "inputs": [
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "chainId",
+        "type": "uint256"
+      },
       {
         "indexed": true,
         "internalType": "bytes32",
@@ -168,12 +196,31 @@
     "inputs": [
       {
         "indexed": true,
+        "internalType": "uint256",
+        "name": "chainId",
+        "type": "uint256"
+      },
+      {
+        "indexed": true,
         "internalType": "bytes32",
         "name": "beaconId",
         "type": "bytes32"
       }
     ],
     "name": "RemoveBeacon",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "fee",
+        "type": "uint256"
+      }
+    ],
+    "name": "SetFee",
     "type": "event"
   },
   {
@@ -230,7 +277,17 @@
   {
     "inputs": [
       {
+        "internalType": "uint256",
+        "name": "chainId",
+        "type": "uint256"
+      },
+      {
         "components": [
+          {
+            "internalType": "uint256",
+            "name": "chainId",
+            "type": "uint256"
+          },
           {
             "internalType": "address",
             "name": "airnode",
@@ -265,6 +322,11 @@
   {
     "inputs": [
       {
+        "internalType": "uint256",
+        "name": "chainId",
+        "type": "uint256"
+      },
+      {
         "internalType": "bytes32[]",
         "name": "beaconIds",
         "type": "bytes32[]"
@@ -289,8 +351,14 @@
     "type": "function"
   },
   {
-    "inputs": [],
-    "name": "beaconsLength",
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "chainId",
+        "type": "uint256"
+      }
+    ],
+    "name": "beaconsLengthOf",
     "outputs": [
       {
         "internalType": "uint256",
@@ -305,6 +373,11 @@
     "inputs": [
       {
         "components": [
+          {
+            "internalType": "uint256",
+            "name": "chainId",
+            "type": "uint256"
+          },
           {
             "internalType": "address",
             "name": "airnode",
@@ -472,8 +545,14 @@
     "type": "function"
   },
   {
-    "inputs": [],
-    "name": "getRequestFee",
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "chainId",
+        "type": "uint256"
+      }
+    ],
+    "name": "getRequestFeeOf",
     "outputs": [
       {
         "internalType": "address",
@@ -511,6 +590,11 @@
   {
     "inputs": [
       {
+        "internalType": "uint256",
+        "name": "chainId",
+        "type": "uint256"
+      },
+      {
         "internalType": "bytes32",
         "name": "beaconId",
         "type": "bytes32"
@@ -532,21 +616,13 @@
     "name": "localCommitment",
     "outputs": [
       {
-        "internalType": "bytes",
-        "name": "",
-        "type": "bytes"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "messageRoot",
-    "outputs": [
+        "internalType": "uint256",
+        "name": "count",
+        "type": "uint256"
+      },
       {
         "internalType": "bytes32",
-        "name": "",
+        "name": "root",
         "type": "bytes32"
       }
     ],
@@ -554,13 +630,19 @@
     "type": "function"
   },
   {
-    "inputs": [],
-    "name": "name",
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "chainId",
+        "type": "uint256"
+      }
+    ],
+    "name": "messageRootOf",
     "outputs": [
       {
-        "internalType": "string",
+        "internalType": "bytes32",
         "name": "",
-        "type": "string"
+        "type": "bytes32"
       }
     ],
     "stateMutability": "view",
@@ -641,8 +723,14 @@
     "type": "function"
   },
   {
-    "inputs": [],
-    "name": "remoteCommitment",
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "chainId",
+        "type": "uint256"
+      }
+    ],
+    "name": "remoteCommitmentOf",
     "outputs": [
       {
         "internalType": "uint256",
@@ -660,6 +748,11 @@
   },
   {
     "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "chainId",
+        "type": "uint256"
+      },
       {
         "internalType": "bytes32",
         "name": "beaconId",
@@ -681,7 +774,17 @@
   {
     "inputs": [
       {
+        "internalType": "uint256",
+        "name": "chainId",
+        "type": "uint256"
+      },
+      {
         "components": [
+          {
+            "internalType": "uint256",
+            "name": "chainId",
+            "type": "uint256"
+          },
           {
             "internalType": "address",
             "name": "airnode",
@@ -716,38 +819,12 @@
   {
     "inputs": [
       {
-        "internalType": "address",
-        "name": "_airnodeRrp",
-        "type": "address"
-      }
-    ],
-    "name": "setAirnodeRrp",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
         "internalType": "uint256",
         "name": "fee_",
         "type": "uint256"
       }
     ],
     "name": "setFee",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "string",
-        "name": "name_",
-        "type": "string"
-      }
-    ],
-    "name": "setName",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
