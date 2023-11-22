@@ -28,12 +28,12 @@ chain=crab
 # ArbitrumSepoliaMessageRoot
 fromChain=arbitrum-sepolia
 endpointId=0x63400292c39bafe31164968499615317be0f1b97b4122a29d436c8fb427fdf65
-# add_beacon $chain $endpointId $fromChain
+add_beacon $chain $endpointId $fromChain
 
 # SepoliaMessageRoot
 fromChain=sepolia
 endpointId=0x009d6b53b1429850be54c01f42e00985b38c66c57d4742bcb443ee902ed7b7c8
-# add_beacon $chain $endpointId $fromChain
+add_beacon $chain $endpointId $fromChain
 
 
 chain=arbitrum-sepolia
