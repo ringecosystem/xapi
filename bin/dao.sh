@@ -10,3 +10,4 @@ dao=$(jq -r ".SUBAPIDAO" $c3)
 
 seth send -F $deployer $subapi "transferOwnership(address)" $dao --chain darwinia
 seth send -F $deployer $subapi "transferOwnership(address)" $dao --chain arbitrum
+seth send -F $deployer $subapi "transferOwnership(address)" $dao --chain ethereum
