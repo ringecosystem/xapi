@@ -38,7 +38,7 @@ contract SubAPIMultiSig is MultiSig {
         bytes32 messageRoot,
         bytes calldata signatures
     ) external {
-        bytes memory data = abi.encode(1, block.chainid, address(this), expiration, chainId, blockNumber, messageRoot);
+        bytes memory data = abi.encode(1, expiration, chainId, blockNumber, messageRoot);
         bytes32 hash = keccak256(data);
         _checkSigs(expiration, hash, signatures);
         ORACLE.importMessageRoot(chainId, blockNumber, messageRoot);
