@@ -3,11 +3,7 @@
 set -eo pipefail
 
 c3=$PWD/script/input/c3.json
-
-deployer=$(jq -r ".DEPLOYER" $c3)
-ormp=$(jq -r ".ORMP_ADDR" $c3)
-subapi=$(jq -r ".SUBAPI_ADDR" $c3)
-rrp=$(jq -r ".RRP_ADDR" $c3)
+subapi=$(jq -r ".SUBAPIMULTISIG_ADDR" $c3)
 
 verify() {
   local addr; addr=$1
@@ -27,4 +23,7 @@ verify() {
     $path > script/output/$chain_id/$name.v.json)
 }
 
-verify $subapi 1 $(cast abi-encode "constructor(address,address,address)" $deployer $rrp $ormp) src/SubAPI.sol:SubAPI
+parameters=0x0000000000000000000000000000000005be70a35b6534bfbd21ec0c98b27b1f000000000000000000000000000000000000000000000000000000000000006000000000000000000000000000000000000000000000000000000000000000030000000000000000000000000000000000000000000000000000000000000005000000000000000000000000178e699c9a6bb2cd624557fbd85ed219e6faba770000000000000000000000009f33a4809aa708d7a399fedba514e0a0d15efa85000000000000000000000000a4be619e8c0e3889f5fa28bb0393a4862cad35ad000000000000000000000000b9a0cadd13c5d534b034d878b2fca9e5a6e1e3a4000000000000000000000000fa5727be643dba6599fc7f812fe60da3264a8205=
+verify $subapi 1  $parameters src/SubAPIMultiSig.sol:SubAPIMultiSig
+verify $subapi 44 $parameters src/SubAPIMultiSig.sol:SubAPIMultiSig
+verify $subapi 421614 $parameters src/SubAPIMultiSig.sol:SubAPIMultiSig
