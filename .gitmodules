@@ -7,3 +7,6 @@
 [submodule "lib/create3-deploy"]
 	path = lib/create3-deploy
 	url = https://github.com/darwinia-network/create3-deploy
+[submodule "lib/safe-smart-account"]
+	path = lib/safe-smart-account
+	url = https://github.com/safe-global/safe-smart-account
