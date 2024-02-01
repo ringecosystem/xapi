@@ -1,4 +1,5 @@
 @openzeppelin/contracts@4.9.2/=lib/zeppelin-solidity/contracts/
+@safe-smart-account/=lib/safe-smart-account/contracts/
 ds-test/=lib/forge-std/lib/ds-test/src/
 create3-deploy/=lib/create3-deploy/
 forge-std/=lib/forge-std/src/

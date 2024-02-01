@@ -13,7 +13,6 @@ contract MultiSigDeploy is Common {
     using stdJson for string;
     using ScriptTools for string;
 
-    address ORACLE;
     address ADDR;
     bytes32 SALT;
 
@@ -34,7 +33,6 @@ contract MultiSigDeploy is Common {
         outputName = "multisig_deploy.a";
         config = ScriptTools.readInput(instanceId);
         c3 = ScriptTools.readInput("../c3");
-        ORACLE = c3.readAddress(".ORACLE_ADDR");
         ADDR = c3.readAddress(".SUBAPIMULTISIG_ADDR");
         SALT = c3.readBytes32(".SUBAPIMULTISIG_SALT");
 
@@ -53,7 +51,7 @@ contract MultiSigDeploy is Common {
         bytes memory byteCode = type(SubAPIMultiSig).creationCode;
         address[] memory signers = config.readAddressArray(".SIGNERS");
         uint64 quorum = uint64(config.readUint(".QUORUM"));
-        bytes memory initCode = bytes.concat(byteCode, abi.encode(ORACLE, signers, quorum));
+        bytes memory initCode = bytes.concat(byteCode, abi.encode(signers, quorum));
         address subapi = _deploy3(SALT, initCode);
         require(subapi == ADDR, "!addr");
 
