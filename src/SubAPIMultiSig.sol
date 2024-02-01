@@ -4,7 +4,6 @@ pragma solidity 0.8.17;
 
 import {ECDSA} from "@openzeppelin/contracts@4.9.2/utils/cryptography/ECDSA.sol";
 import {OwnerManager} from "@safe-smart-account/base/OwnerManager.sol";
-import "./interfaces/IOracle.sol";
 
 contract SubAPIMultiSig is OwnerManager {
     mapping(bytes32 => bool) public doneOf;
