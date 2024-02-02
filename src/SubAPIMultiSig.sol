@@ -40,7 +40,7 @@ contract SubAPIMultiSig is OwnerManager {
         external
         payable
     {
-        bytes memory txData = abi.encode(to, value, expiration, data);
+        bytes memory txData = abi.encode(block.chainid, address(this), to, value, expiration, data);
         bytes32 hash = keccak256(txData);
         _checkSigs(expiration, hash, signatures);
         (bool success,) = to.call{value: value}(data);
