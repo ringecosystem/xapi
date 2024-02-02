@@ -6,6 +6,8 @@ import {ECDSA} from "@openzeppelin/contracts@4.9.2/utils/cryptography/ECDSA.sol"
 import {OwnerManager} from "@safe-smart-account/base/OwnerManager.sol";
 
 contract SubAPIMultiSig is OwnerManager {
+    event ExecutionSuccess(bytes32 indexed hash);
+
     mapping(bytes32 => bool) public doneOf;
 
     receive() external payable {}
@@ -46,5 +48,6 @@ contract SubAPIMultiSig is OwnerManager {
         (bool success,) = to.call{value: value}(data);
         require(success, "exec failed");
         doneOf[hash] = true;
+        emit ExecutionSuccess(hash);
     }
 }
