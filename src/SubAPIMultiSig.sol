@@ -15,7 +15,7 @@ contract SubAPIMultiSig is OwnerManager {
     }
 
     function verifySignatures(bytes32 hash, bytes calldata signatures) public view {
-        require(signatures.length == threshold * 65, "Invalid signature length");
+        require(signatures.length == threshold * 65, "invalid signature length");
         bytes32 messageDigest = ECDSA.toEthSignedMessageHash(hash);
 
         address lastOwner = address(0);
