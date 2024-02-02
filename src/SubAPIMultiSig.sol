@@ -41,11 +41,12 @@ contract SubAPIMultiSig is OwnerManager {
     function exec(address to, uint256 value, uint256 expiration, bytes memory data, bytes calldata signatures)
         external
         payable
+        returns (bool success)
     {
         bytes memory txData = abi.encode(block.chainid, address(this), to, value, expiration, data);
         bytes32 hash = keccak256(txData);
         _checkSigs(expiration, hash, signatures);
-        (bool success,) = to.call{value: value}(data);
+        (success,) = to.call{value: value}(data);
         doneOf[hash] = true;
         emit ExecutionResult(hash, success);
     }
