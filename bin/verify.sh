@@ -28,7 +28,8 @@ parameters=0x0000000000000000000000000000000000000000000000000000000000000040000
 # verify $subapi 43 $parameters src/SubAPIMultiSig.sol:SubAPIMultiSig
 # verify $subapi 421614 $parameters src/SubAPIMultiSig.sol:SubAPIMultiSig
 
-verify $subapi 1     $parameters src/SubAPIMultiSig.sol:SubAPIMultiSig
-verify $subapi 44    $parameters src/SubAPIMultiSig.sol:SubAPIMultiSig
-verify $subapi 46    $parameters src/SubAPIMultiSig.sol:SubAPIMultiSig
-verify $subapi 42161 $parameters src/SubAPIMultiSig.sol:SubAPIMultiSig
+# verify $subapi 1     $parameters src/SubAPIMultiSig.sol:SubAPIMultiSig
+# verify $subapi 44    $parameters src/SubAPIMultiSig.sol:SubAPIMultiSig
+# verify $subapi 46    $parameters src/SubAPIMultiSig.sol:SubAPIMultiSig
+verify $subapi 137   $parameters src/SubAPIMultiSig.sol:SubAPIMultiSig
+# verify $subapi 42161 $parameters src/SubAPIMultiSig.sol:SubAPIMultiSig
