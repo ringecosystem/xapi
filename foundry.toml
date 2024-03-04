@@ -30,8 +30,10 @@ arbitrum = "https://arb1.arbitrum.io/rpc"
 sepolia = "https://sepolia.infura.io/v3/${INFURA_KEY}"
 ethereum = "https://mainnet.infura.io/v3/${INFURA_KEY}"
 polygon = "https://polygon-mainnet.infura.io/v3/${INFURA_KEY}"
+blast = "https://rpc.blast.io"
 
 [etherscan]
+blast = { key = "${ETHERSCAN_BLAST_KEY}", url = "https://api.blastscan.io/api"}
 polygon = { key = "${ETHERSCAN_POLYGON_KEY}" }
 arbitrum = { key = "${ETHERSCAN_ARBITRUM_KEY}" }
 arbitrum-goerli = { key = "${ETHERSCAN_ARBITRUM_KEY}" }
