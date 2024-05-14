@@ -7,3 +7,14 @@
 | SubAPIDAO            | 0x000000000a0D8ac9cc6CbD817fA77090322FF29d   |
 | SubAPISignaturePub   | 0xb2aa34fde97ffdb6197dd5a2be23c2121405cc12   |
 | SUBAPIMultiSig       | 0x000000000d60704384100A29efb6C9cf8cD72820   |
+
+
+### Tron Shasta
+```
+SUBAPIMultiSig: TEYbMKVNpumbN5myf5uN6VgFStckj9DGe5
+```
+
+### Tron
+```
+SUBAPIMultiSig: TMP3K1GjRgsXAUHX1jkBaBwaordRi9gHRH
+```
